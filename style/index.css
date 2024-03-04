@@ -110,7 +110,7 @@ nav a:hover {
   color: white;
   position: relative;
   margin-right: 25px;
-  background-color: purple;
+  background-color: 3498db;
   padding: 10px 15px;
 }
 
@@ -192,7 +192,7 @@ nav a:hover {
 }
 
 #getstarted {
-  background-color: #800080;
+  background-color: #3498db;
   color: white;
 }
 

@@ -13,3 +13,19 @@ function login() {
     y.style.left = "550px";
     z.style.left = "0";
 }
+
+
+// toogling the password to show or hide
+
+function togglePassword() {
+    var passwordField = document.getElementById("password");
+    var showPassword = document.getElementById("showPassword");
+
+    if (showPassword.checked) {
+        passwordField.type = "text";
+    } else {
+        passwordField.type = "password";
+    }
+}
+
+document.getElementById("showPassword").addEventListener("change",togglePassword);

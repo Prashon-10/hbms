@@ -7,7 +7,7 @@
 .main-box {
     height: 100%;
     width: 100%;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../images/login-reg-img/banner.jpg);
+    background-image: linear-gradient(rgba(30, 194, 215, 0.4), rgba(61, 35, 232, 0.3)), url(../images/login-reg-img/banner.jpg);
     background-position: center;
     background-size: cover;
     position: absolute;
@@ -120,7 +120,7 @@
 span {
     color: #e6e4e4;
     font-size: 14px;
-    bottom: 67px;
+    bottom: 69px;
     position: absolute;
 }
 
@@ -130,4 +130,9 @@ span {
 
 #signup {
     left: 550px;
+}
+
+.input-field::placeholder {
+    color: white;
+    font-size: 14px;
 }
