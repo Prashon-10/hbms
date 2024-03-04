@@ -1,0 +1,268 @@
+* {
+  font-family: "poppins", sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+/* logo */
+#logo {
+  margin-right: auto;
+  margin-left: 60px;
+}
+
+#logo img {
+  width: 50px;
+  height: 50px;
+  margin-top: 10px;
+}
+
+#hotel-name {
+  color: purple;
+  bottom: 14px;
+  position: relative;
+  margin-left: 10px;
+}
+
+.HD-logo {
+  font-size: 30px;
+  color: #800698;
+}
+
+/* navigation */
+nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 6vh;
+  border: 1px solid lightgray;
+  color: white;
+  padding-right: 70px;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  text-decoration: none;
+  align-items: center;
+}
+
+nav ul li {
+  padding: 15px 20px;
+  position: relative;
+  align-items: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  margin: 0 5px;
+  align-items: center;
+  font-weight: bold;
+}
+
+nav a:hover {
+  color: rgb(102, 6, 154);
+}
+
+/* Dropdown Styles */
+.dropbtn {
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-contents {
+  display: none;
+  position: absolute;
+  padding: 10px;
+  background-color: #f9f9f9;
+  min-width: 150px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+  z-index: 1;
+}
+
+.dropdown-contents a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-contents a:hover {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+}
+
+.dropdown:hover .dropdown-contents {
+  display: block;
+}
+
+/* signup button customization */
+#signup {
+  border-radius: 10px;
+  color: white;
+  position: relative;
+  margin-right: 25px;
+  background-color: purple;
+  padding: 10px 15px;
+}
+
+#bookhere {
+  border-radius: 10px;
+  position: relative;
+  right: 45px;
+  color: black;
+  background-color: #f1f1f1;
+  padding: 10px 20px;
+}
+
+/* Header Contents */
+/* Hotel Image */
+
+.image-content {
+  position: relative;
+}
+
+.image-content img {
+  overflow: hidden;
+  border-radius: 20px;
+  position: absolute;
+  left: 380px;
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+#mainhotelroom {
+  height: 630px;
+  width: 1150px;
+}
+
+/* Hotel Image Text */
+.image-content h1 {
+  position: absolute;
+  left: 420px;
+  top: 400px;
+  color: rgb(250, 250, 250);
+  font-size: 45px;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px rgb(0, 0, 0);
+  cursor: default;
+}
+
+#mainimagetext {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  position: absolute;
+  margin-left: 420px;
+  top: 480px;
+  color: rgb(255, 255, 255);
+  font-size: 20px;
+  cursor: default;
+  display: block;
+}
+
+#mainimagetext span:hover {
+  color: #b9b9b9;
+  transition: 0.2s ease;
+}
+
+/* Button in Image Customization */
+#mainimagetext a {
+  text-decoration: none;
+  font-weight: 600;
+  margin: 0px;
+  padding: 14px;
+  border-radius: 15px;
+  top: 90px;
+  right: 55px;
+  margin-right: 25px;
+  position: relative;
+}
+
+#learnmore {
+  background-color: white;
+  color: #800080;
+}
+
+#getstarted {
+  background-color: #800080;
+  color: white;
+}
+
+/* Main contents */
+.main-contents {
+  text-align: left;
+  margin-top: 30px;
+  margin-left: 19%;
+  padding: 10px;
+  position: relative;
+  top: 59%;
+}
+
+#hotel-ticket {
+  cursor: default;
+}
+
+* {
+  font-family: "poppins", sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+/* Cards Styles */
+.cards-services {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.card {
+  width: 380px;
+  margin: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: transform 0.3s ease-in-out;
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #ddd;
+}
+
+.card h2 {
+  padding: 15px;
+  font-size: 1.5em;
+  color: #333;
+  cursor: default;
+}
+
+.card p {
+  padding: 0 15px 15px 15px;
+  color: #666;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px;
+  color: #fff;
+  text-decoration: none;
+  background-color: #3498db;
+  border-radius: 5px;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}

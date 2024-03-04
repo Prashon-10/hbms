@@ -1,0 +1,133 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: poppins, sans-serif;
+}
+
+.main-box {
+    height: 100%;
+    width: 100%;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../images/login-reg-img/banner.jpg);
+    background-position: center;
+    background-size: cover;
+    position: absolute;
+}
+
+.form-box {
+    width: 500px;
+    height: 600px;
+    position: relative;
+    margin: 6% auto;
+    background-image: linear-gradient(rgba(20, 55, 56, 0.7), rgb(65, 89, 93, 0.7));
+    color: #fff;
+    padding: 5px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.button-box {
+    width: 220px;
+    margin: 35px auto;
+    position: relative;
+    box-shadow: 0 0 20px 9px #ff61241f;
+    border-radius: 30px;
+}
+
+.toggle-btn {
+    padding: 10px 30px;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    outline: none;
+    position: relative;
+    color: white;
+}
+
+#btn {
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 110px;
+    height: 100%;
+    background: linear-gradient(to right, #8c2ce7, #e033ea);
+    border-radius: 30px;
+    transition: .5s;
+}
+
+.socialmedia {
+    margin: 30px auto;
+    text-align: center;
+}
+
+.socialmedia img {
+    width: 30px;
+    margin: 0 12px;
+    box-shadow: 0 0 20px 0 #b631313d;
+    color: white;
+    filter: grayscale(100%);
+    transition: filter 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.socialmedia img:hover {
+    filter: grayscale(0);
+    background-color: rgb(233, 141, 125);
+    box-shadow: 0 0 20px 5px rgba(255, 94, 0, 0.6);
+
+}
+
+.input-group {
+    top: 220px;
+    position: absolute;
+    width: 320px;
+    transition: .5s;
+}
+
+.input-field {
+    font-size: 15px;
+    color: aliceblue;
+    font-weight: 400;
+    width: 100%;
+    padding: 10px 0;
+    margin: 5px 0;
+    border-left: 0;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 1px solid #999;
+    outline: none;
+    background: transparent;
+}
+
+.submit-btn {
+    color: white;
+    font-size: 15px;
+    width: 85%;
+    padding: 10px 30px;
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    background: linear-gradient(to right, #8c2ce7, #e033ea);
+    border: 0;
+    outline: none;
+    border-radius: 30px;
+}
+
+.check-box {
+    margin: 30px 10px 30px 0;
+}
+
+span {
+    color: #e6e4e4;
+    font-size: 14px;
+    bottom: 67px;
+    position: absolute;
+}
+
+#login {
+    left: 80px;
+}
+
+#signup {
+    left: 550px;
+}
