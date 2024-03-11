@@ -28,4 +28,17 @@ function togglePassword() {
     }
 }
 
-document.getElementById("showPassword").addEventListener("change",togglePassword);
+document.getElementById("showPassword").addEventListener("change", togglePassword);
+
+// Redirect to Login
+function updateFormAction() {
+    var form = document.getElementById("signup");
+    form.action = "login.php";
+
+    var elements = form.elements;
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].disabled = true;
+    }
+
+    form.submit();
+}

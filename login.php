@@ -29,6 +29,7 @@
                     required>
                 <input type="checkbox" class="check-box" id="showPassword" onclick="togglePassword()">
                 <span>Show Password</span>
+                <input type="hidden" name="login" value="1">
                 <button type="submit" class="submit-btn">Login</button>
             </form>
 
@@ -38,8 +39,10 @@
                 <label for="email1"></label>
                 <input type="email" name="email" id="email1" class="input-field" placeholder="Email" required>
                 <label for="password1"></label>
-                <input type="password" name="password" class="input-field" id="password1" placeholder="Password" required>
+                <input type="password" name="password" class="input-field" id="password1" placeholder="Password"
+                    required>
                 <input type="checkbox" class="check-box"><span>I agree to the terms & conditions</span>
+                <input type="hidden" name="signup" value="1">
                 <button type="submit" class="submit-btn">Signup</button>
             </form>
         </div>
