@@ -1,3 +1,16 @@
+<?php
+session_start(); // Start the session
+
+// Check if a registration success message is set
+if (isset($_SESSION['registration_success'])) {
+    echo '<div class="registration-success-message-container">';
+    echo '<div class="registration-success-message">' . $_SESSION['registration_success'] . '</div>';
+    echo '</div>';
+
+    // Unset the session variable to avoid displaying the message on subsequent visits
+    unset($_SESSION['registration_success']);
+}
+?>
 <!DOCTYPE html>
 <html>
 

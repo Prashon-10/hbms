@@ -1,18 +1,14 @@
 <?php
-// Database configuration
+
 $host = 'localhost';
 $username = 'root';
 $password = '';
-$database = 'hotelbooking';
 
-// Create a new mysqli instance
-$mysqli = new mysqli($host, $username, $password, $database);
+$mysqli = new mysqli($host, $username, $password);
 
-// Check connection
 if ($mysqli->connect_error) {
     die('Connection failed: ' . $mysqli->connect_error);
 }
+return $mysqli;
 
-// Connection successful
-echo 'Connected to the database successfully!';
 ?>

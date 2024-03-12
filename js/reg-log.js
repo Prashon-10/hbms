@@ -42,3 +42,22 @@ function updateFormAction() {
 
     form.submit();
 }
+
+
+// Date reservation
+document.addEventListener("DOMContentLoaded", function () {
+    // Submit form
+    document.getElementById("reservation-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var checkInDate = document.getElementById("check-in-date").value;
+        var checkOutDate = document.getElementById("check-out-date").value;
+
+        if (checkInDate && checkOutDate) {
+            alert("Room reserved from " + checkInDate + " to " + checkOutDate);
+            // Add your backend logic to handle the reservation
+        } else {
+            alert("Please select both check-in and check-out dates.");
+        }
+    });
+});

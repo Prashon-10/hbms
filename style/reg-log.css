@@ -136,3 +136,20 @@ span {
     color: white;
     font-size: 14px;
 }
+
+
+/* Registration Successful */
+.registration-success-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.registration-success-message {
+    padding: 20px;
+    background-color: #8c2ce7;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}

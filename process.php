@@ -1,58 +1,54 @@
 <?php
-// Establish database connection
-$conn = new mysqli("localhost", "root", "", "hotelbooking");
+// Include the database connection file with the correct path
+include_once "./config/connection.php";
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// Check if the connection is successful
+if ($mysqli->connect_error) {
+    die('Connection failed: ' . $mysqli->connect_error);
 }
 
-// LOGIN PROCESS
-// LOGIN PROCESS
+// Check if the signup form is submitted
+if (isset($_POST['signup'])) {
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+    $query = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
+
+    if ($mysqli->query($query) === TRUE) {
+        // Set a session variable for the success message
+        session_start();
+        $_SESSION['registration_success'] = "User registered successfully!";
+
+        // Redirect to login page after successful registration
+        header("Location: login.php");
+        exit();
+    } else {
+        echo "Error: " . $query . "<br>" . $mysqli->error;
+    }
+}
+
+// Check if the login form is submitted
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
+    $query = "SELECT id, username, password FROM users WHERE email='$email'";
+    $result = $mysqli->query($query);
 
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-
-    if ($user && password_verify($password, $user['password'])) {
-        // Correct login credentials
-        echo "Login successful!";
-        
-        // Redirect to a new page (change 'new_page.php' to the desired page)
-        header("Location: index.php");
-        exit(); // Stop further execution
+    if ($result && $result->num_rows == 1) {
+        $row = $result->fetch_assoc();
+        if (password_verify($password, $row['password'])) {
+            echo "Login successful! Welcome, " . $row['username'];
+            // Redirect to the home page or perform other actions
+        } else {
+            echo "Incorrect password. Please try again.";
+        }
     } else {
-        // Invalid email or password
-        echo "Invalid email or password";
+        echo "User not found. Please check your email and try again.";
     }
-
-    $stmt->close();
 }
 
-
-/// SIGNUP PROCESS
-if (isset($_POST['signup'])) {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $username, $email, $password);
-
-    if ($stmt->execute()) {
-        echo "Signup successful!";
-        header("Refresh: 1; URL=login.php");
-        exit();
-    } else {
-        echo "Error during signup: " . $stmt->error;
-    }
-
-    $stmt->close();
-}
-
+// Close the database connection
+$mysqli->close();
 ?>
