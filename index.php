@@ -60,12 +60,6 @@
 
         ?>
 
-        <!DOCTYPE html>
-        <html lang="en">
-
-        </html>
-
-
         <form id="reservation-form" method="post" action="">
             <label for="check-in-date">Check-In Date:</label>
             <input type="date" id="check-in-date" name="check-in-date" required>
@@ -84,28 +78,28 @@
             <img src="./images/room-types/normal.jpg" alt="Normal">
             <h2>Normal Room</h2>
             <p>Comfortable and budget-friendly room for a relaxing stay.</p>
-            <a href="#" class="btn">Book Now</a>
+            <a href="details.php?type=normal&price=100" class="btn">Book Now</a>
         </div>
 
         <div class="card">
             <img src="./images/room-types/deluxe.jpg" alt="Deluxe">
             <h2>Deluxe Suite</h2>
             <p>Spacious and luxurious suite with a breathtaking view.</p>
-            <a href="#" class="btn">Book Now</a>
+            <a href="details.php?type=deluxe&price=200" class="btn">Book Now</a>
         </div>
 
         <div class="card">
             <img src="./images/room-types/executive.jpg" alt="Executive">
             <h2>Executive Room</h2>
             <p>Modern and comfortable room designed for business travelers.</p>
-            <a href="#" class="btn">Book Now</a>
+            <a href="details.php?type=executive&price=250" class="btn">Book Now</a>
         </div>
 
         <div class="card">
             <img src="./images/room-types/premium.jpg" alt="Premium">
             <h2>Premium Suite</h2>
             <p>Elegant suite with premium amenities for a luxurious experience.</p>
-            <a href="#" class="btn">Book Now</a>
+            <a href="details.php?type=premium&price=350sdkfsdfjksjdfjksdfjksdkf" class="btn">Book Now</a>
 
         </div>
 
@@ -150,6 +144,6 @@
             <p>Host your meetings and events with our well-equipped conference rooms. Book in advance.</p>
         </div>
 
-
     </div>
+
     <?php include_once "includes/footer.php" ?>

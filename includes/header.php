@@ -18,15 +18,11 @@
             <ul>
                 <li><a href="index.php">Home</a></li>
                 <li><a href="#">About</a></li>
-                <div class="dropdown">
-                    <a href="#" class="dropbtn">Services</a>
-                    <div class="dropdown-contents">
-                        <a href="#">Rooms</a>
-                    </div>
-                </div>
+                <li><a href="#services">Service</a></li>
+                <li><a href="#hotel-ticket">Rooms</a></li>
                 <li><a href="#">Contact</a></li>
                 <li><a href="./login.php" id="signup">Signup</a></li>
-                <li><a href="#" id="bookhere">Book Here</a></li>
+                <li><a href="details.php" id="bookhere">Book Here</a></li>
             </ul>
         </nav>
     </div>

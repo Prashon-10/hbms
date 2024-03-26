@@ -1,0 +1,67 @@
+/* welcome.css */
+
+body, h1, h2, p {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+}
+
+main {
+    padding: 50px 0;
+}
+
+.welcome-message {
+    text-align: center;
+}
+
+.welcome-message h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.welcome-message p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    text-align: center;
+}
+
+footer p {
+    color: #333;
+}

@@ -1,13 +1,12 @@
+// process.php
+
 <?php
-// Include the database connection file with the correct path
 include_once "./config/connection.php";
 
-// Check if the connection is successful
 if ($mysqli->connect_error) {
     die('Connection failed: ' . $mysqli->connect_error);
 }
 
-// Check if the signup form is submitted
 if (isset($_POST['signup'])) {
     $username = $_POST['username'];
     $email = $_POST['email'];
@@ -16,19 +15,15 @@ if (isset($_POST['signup'])) {
     $query = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
 
     if ($mysqli->query($query) === TRUE) {
-        // Set a session variable for the success message
         session_start();
         $_SESSION['registration_success'] = "User registered successfully!";
-
-        // Redirect to login page after successful registration
-        header("Location: login.php");
+        header("Location: login.php"); // Redirect to login page after successful registration
         exit();
     } else {
         echo "Error: " . $query . "<br>" . $mysqli->error;
     }
 }
 
-// Check if the login form is submitted
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -39,8 +34,12 @@ if (isset($_POST['login'])) {
     if ($result && $result->num_rows == 1) {
         $row = $result->fetch_assoc();
         if (password_verify($password, $row['password'])) {
-            echo "Login successful! Welcome, " . $row['username'];
-            // Redirect to the home page or perform other actions
+            session_start();
+            $_SESSION['user_id'] = $row['id'];
+            $_SESSION['username'] = $row['username'];
+
+            header("Location: welcome.php");
+            exit();
         } else {
             echo "Incorrect password. Please try again.";
         }
@@ -49,6 +48,5 @@ if (isset($_POST['login'])) {
     }
 }
 
-// Close the database connection
 $mysqli->close();
 ?>

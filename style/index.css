@@ -258,13 +258,13 @@ nav a:hover {
 }
 
 .card:hover {
-  transform: scale(0.9);
+  transform: scale(1.05);
 }
 
 /* reservation  */
 .reservation-container {
   max-width: 510px;
-  margin: 25px 20%;
+  margin: 50px 20%;
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
