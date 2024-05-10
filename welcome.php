@@ -1,37 +1,32 @@
 <?php
 session_start();
+include("./config/connection.php");
 
-if (!isset($_SESSION['username'])) {
-
-    header("Location: login.php");
-    exit();
-}
 ?>
 
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>HD - Welcome</title>
-    <link rel="stylesheet" href="css/welcome.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
 </head>
-
 <body>
-    <header>
-        <div class="container">
-            <h1>Welcome to Hotel Dynasty</h1>
-        </div>
-    </header>
-
-    <main>
-        <div class="container">
-            <div class="welcome-message">
-                <h2>Dear Guest,</h2>
-                <p>We're delighted to have you with us!</p>
-                <p>Explore our services and start planning your next stay with us.</p>
-                <a href="reservation.php" class="btn">Make a Reservation</a>
-            </div>
-        </div>
-    </main>
-
-    <?php include_once "includes/footer.php" ?>
+    <div style="text-align:center; padding:15%;">
+      <p  style="font-size:50px; font-weight:bold;">
+       Hello  <?php 
+       if(isset($_SESSION['email'])){
+        $email=$_SESSION['email'];
+        $query=mysqli_query($conn, "SELECT users.* FROM `users` WHERE users.email='$email'");
+        while($row=mysqli_fetch_array($query)){
+            echo $row['firstName'].' '.$row['lastName'];
+        }
+       }
+       ?>
+       :)
+      </p>
+      <a href="logout.php">Logout</a>
+    </div>
 </body>
-
 </html>

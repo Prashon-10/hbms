@@ -22,43 +22,6 @@
     <div class="reservation-container">
         <h1>Room Reservation</h1>
 
-        <?php
-
-        $mysqli = include_once "./config/connection.php";
-
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check-in-date']) && isset($_POST['check-out-date'])) {
-            $checkInDate = validateAndSanitizeDate($_POST['check-in-date']);
-            $checkOutDate = validateAndSanitizeDate($_POST['check-out-date']);
-
-            if ($checkInDate && $checkOutDate) {
-                $insertQuery = "INSERT INTO reservations (check_in_date, check_out_date) VALUES ('$checkInDate', '$checkOutDate')";
-
-                if ($mysqli->query($insertQuery) === TRUE) {
-                    echo 'Room reserved successfully!<br>';
-                } else {
-                    echo 'Error reserving room: ' . $mysqli->error . '<br>';
-                }
-            } else {
-                echo 'Invalid date format!<br>';
-            }
-        }
-
-        $mysqli->close();
-
-        function validateAndSanitizeDate($date)
-        {
-            $sanitizedDate = filter_var($date, FILTER_SANITIZE_STRING);
-
-            // Validate date format (YYYY-MM-DD)
-            $dateRegex = "/^\d{4}-\d{2}-\d{2}$/";
-            if (preg_match($dateRegex, $sanitizedDate)) {
-                return $sanitizedDate;
-            } else {
-                return false;
-            }
-        }
-
-        ?>
 
         <form id="reservation-form" method="post" action="">
             <label for="check-in-date">Check-In Date:</label>
@@ -70,6 +33,15 @@
             <button type="submit">Reserve Room</button>
         </form>
     </div>
+
+    <!-- <h1 id="about-hotel">About</h1>
+    <div class="about-myhotel">
+        <img src="./images/hotel.jpg" alt="hotel">
+        <p>Hotel Dynasty is a luxury hotel located in the heart of the city, offering a perfect blend of modern
+            amenities and traditional hospitality. Our hotel features elegantly designed rooms and suites, a
+            multi-cuisine restaurant, a rooftop bar, a fitness center, and a spa. Whether you are traveling for
+            business or leisure, Hotel Dynasty is the ideal choice for a comfortable and memorable stay.</p>
+    </div> -->
 
     <h1 id="hotel-ticket">Rooms</h1>
     <div class="cards-room">

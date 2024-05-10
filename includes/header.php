@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./style/index.css" />
 </head>
 
-<body>
+<body> 
     <div class="container">
         <nav class="nav-bar">
             <div id="logo">
@@ -17,11 +17,11 @@
             </div>
             <ul>
                 <li><a href="index.php">Home</a></li>
-                <li><a href="#">About</a></li>
+                <li><a href="#about-hotel">About</a></li>
                 <li><a href="#services">Service</a></li>
                 <li><a href="#hotel-ticket">Rooms</a></li>
                 <li><a href="#">Contact</a></li>
-                <li><a href="./login.php" id="signup">Signup</a></li>
+                <li><a href="./login.php" id="signup">Login</a></li>
                 <li><a href="details.php" id="bookhere">Book Here</a></li>
             </ul>
         </nav>

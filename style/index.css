@@ -142,7 +142,6 @@ nav a:hover {
 
 #mainhotelroom {
   height: 630px;
-  width: 1150px;
 }
 
 /* Hotel Image Text */
@@ -216,6 +215,8 @@ nav a:hover {
   justify-content: flex-start;
   flex-wrap: wrap;
   margin-top: 30px;
+  position: relative;
+  right: 10px;
 }
 
 .card {
@@ -270,14 +271,15 @@ nav a:hover {
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-
+  position: relative;
+  top: 70px;
+  left: 57px;
 }
 
 label {
   display: block;
   margin-bottom: 10px;
   text-align: left;
-
 }
 
 input {
@@ -309,9 +311,10 @@ button:hover {
 
 .cards-services {
   display: flex;
-  justify-content: flex-start;
   flex-wrap: wrap;
   margin-top: 30px;
+  position: relative;
+  right: 10px;
 }
 
 .serviceCard {
