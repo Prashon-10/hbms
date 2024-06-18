@@ -1,9 +1,17 @@
 <?php
 session_start();
-include("./config/connection.php");
+include("config/connection.php");
 
+if (!isset($_SESSION['email'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$email = $_SESSION['email'];
+$query = "SELECT * FROM users WHERE email='$email'";
+$result = $conn->query($query);
+$user = $result->fetch_assoc();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,19 +22,10 @@ include("./config/connection.php");
 </head>
 <body>
     <div style="text-align:center; padding:15%;">
-      <p  style="font-size:50px; font-weight:bold;">
-       Hello  <?php 
-       if(isset($_SESSION['email'])){
-        $email=$_SESSION['email'];
-        $query=mysqli_query($conn, "SELECT users.* FROM `users` WHERE users.email='$email'");
-        while($row=mysqli_fetch_array($query)){
-            echo $row['firstName'].' '.$row['lastName'];
-        }
-       }
-       ?>
-       :)
-      </p>
-      <a href="logout.php">Logout</a>
+        <p style="font-size:50px; font-weight:bold;">
+            Hello <?php echo $user['firstName'] . ' ' . $user['lastName']; ?> :)
+        </p>
+        <a href="logout.php">Logout</a>
     </div>
 </body>
 </html>

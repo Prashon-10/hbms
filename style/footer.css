@@ -14,8 +14,8 @@ footer {
     color: #161515;
     padding: 30px 0;
     width: 100%;
-    position: absolute;
-    right: 96px;
+    /* position: absolute;
+    right: 96px; */
     border-radius: 10px 10px 0 0;
 }
 

@@ -1,3 +1,49 @@
+<?php
+include 'config/connection.php';
+// CRUD operations for rooms
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $action = $_POST['action'];
+
+    if ($action == 'create') {
+        $room_number = $_POST['room_number'];
+        $room_type = $_POST['room_type'];
+        $price = $_POST['price'];
+
+        $sql = "INSERT INTO rooms (room_number, room_type, price) VALUES ('$room_number', '$room_type', '$price')";
+        if ($conn->query($sql) === TRUE) {
+            echo "New room created successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+    } elseif ($action == 'update') {
+        $id = $_POST['id'];
+        $room_number = $_POST['room_number'];
+        $room_type = $_POST['room_type'];
+        $price = $_POST['price'];
+
+        $sql = "UPDATE rooms SET room_number='$room_number', room_type='$room_type', price='$price' WHERE id='$id'";
+        if ($conn->query($sql) === TRUE) {
+            echo "Room updated successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+    } elseif ($action == 'delete') {
+        $id = $_POST['id'];
+
+        $sql = "DELETE FROM rooms WHERE id='$id'";
+        if ($conn->query($sql) === TRUE) {
+            echo "Room deleted successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+    }
+}
+?>
+
+
+
+
+
 <head>
     <title>HotelDynasty - Rooms</title>
     <link rel="stylesheet" href="./style/rooms.css">

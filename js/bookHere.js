@@ -1,31 +1,20 @@
-document.getElementById('room-type').addEventListener('change', function () {
-    const selectedRoom = this.value;
-    let price;
+function updatePrice(roomType) {
+    const pricingElement = document.getElementById('pricing');
+    let price = 100;
 
-    switch (selectedRoom) {
-        case 'deluxe':
-            price = 150;
-            break;
-        case 'suite':
+    switch(roomType) {
+        case 'premium':
             price = 200;
             break;
+        case 'deluxe':
+            price = 200;
+            break;
+        case 'executive':
+            price = 250;
+            break;
         default:
-            price = 100; // Standard room
+            price = 100;
     }
 
-    document.getElementById('pricing').innerHTML = `<p>Starting from $${price} per night</p>`;
-
-    // zoom
-    function openModal(imgSrc) {
-        const modal = document.getElementById('myModal');
-        const modalImg = document.getElementById('modalImg');
-
-        modal.style.display = 'block';
-        modalImg.src = imgSrc;
-    }
-
-    // Close modal
-    function closeModal() {
-        document.getElementById('myModal').style.display = 'none';
-    }
-});
+    pricingElement.innerHTML = `<p>Starting from $${price} per night</p>`;
+}

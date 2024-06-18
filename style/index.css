@@ -1,70 +1,70 @@
 * {
-  font-family: "poppins", sans-serif;
+  font-family: "Poppins", sans-serif;
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
 
-/* logo */
+/* Logo */
 #logo {
-  margin-right: auto;
-  margin-left: 60px;
+  margin: 0 60px;
+  display: flex;
+  align-items: center;
 }
 
 #logo img {
   width: 50px;
   height: 50px;
+  margin-right: 10px;
   margin-top: 10px;
 }
 
 #hotel-name {
   color: purple;
-  bottom: 14px;
-  position: relative;
-  margin-left: 10px;
+  font-size: 1.5rem;
 }
 
 .HD-logo {
-  font-size: 30px;
+  font-size: 2rem;
   color: #800698;
 }
 
-/* navigation */
+/* Navigation */
 nav {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   min-height: 6vh;
-  border: 1px solid lightgray;
-  color: white;
-  padding-right: 70px;
+  border-bottom: 1px solid lightgray;
+  padding: 0 70px;
 }
 
 nav ul {
   display: flex;
   list-style: none;
-  text-decoration: none;
   align-items: center;
 }
 
 nav ul li {
-  padding: 15px 20px;
-  position: relative;
-  align-items: center;
+  margin: 0 15px;
 }
 
 nav a {
   text-decoration: none;
-  color: rgb(0, 0, 0);
-  margin: 0 5px;
-  align-items: center;
+  color: #000;
   font-weight: bold;
+  transition: color 0.3s;
 }
 
 nav a:hover {
-  color: rgb(102, 6, 154);
+  color: #66069a;
 }
 
 /* Dropdown Styles */
+.dropdown {
+  position: relative;
+}
+
 .dropbtn {
   padding: 16px;
   font-size: 16px;
@@ -72,208 +72,202 @@ nav a:hover {
   cursor: pointer;
 }
 
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
 .dropdown-contents {
   display: none;
   position: absolute;
-  padding: 10px;
   background-color: #f9f9f9;
   min-width: 150px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
-  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   z-index: 1;
+  border-radius: 10px;
 }
 
 .dropdown-contents a {
-  color: black;
+  color: #000;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+  transition: background-color 0.3s;
 }
 
 .dropdown-contents a:hover {
   background-color: #f1f1f1;
-  border-radius: 10px;
 }
 
 .dropdown:hover .dropdown-contents {
   display: block;
 }
 
-/* signup button customization */
-#signup {
+/* Signup Button */
+#signup,
+#bookhere {
   border-radius: 10px;
-  color: white;
-  position: relative;
-  margin-right: 25px;
-  background-color: 3498db;
   padding: 10px 15px;
+  margin: 0 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#signup {
+  color: white;
+  background-color: #3498db;
 }
 
 #bookhere {
-  border-radius: 10px;
-  position: relative;
-  right: 45px;
   color: black;
   background-color: #f1f1f1;
-  padding: 10px 20px;
 }
 
 /* Header Contents */
-/* Hotel Image */
-
 .image-content {
   position: relative;
-}
-
-.image-content img {
-  overflow: hidden;
-  border-radius: 20px;
-  position: absolute;
-  left: 380px;
+  text-align: center;
   margin-top: 50px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-#mainhotelroom {
-  height: 630px;
+.image-content img {
+  width: 80%;
+  max-width: 60%;
+  height: auto;
+  border-radius: 20px;
 }
 
-/* Hotel Image Text */
+.image-content h1,
+.image-content p {
+  position: absolute;
+  width: 100%;
+  color: white;
+  text-shadow: 1px 1px 1px #000;
+  text-align: center;
+}
+
 .image-content h1 {
-  position: absolute;
-  left: 420px;
-  top: 400px;
-  color: rgb(250, 250, 250);
-  font-size: 45px;
+  top: 45%;
+  font-size: 2.5rem;
   font-weight: bold;
-  text-shadow: 1px 1px 1px rgb(0, 0, 0);
-  cursor: default;
+  transform: translateY(-50%);
 }
 
-#mainimagetext {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  position: absolute;
-  margin-left: 420px;
-  top: 480px;
-  color: rgb(255, 255, 255);
-  font-size: 20px;
-  cursor: default;
-  display: block;
+.image-content p {
+  top: 55%;
+  font-size: 1.2rem;
 }
 
-#mainimagetext span:hover {
-  color: #b9b9b9;
-  transition: 0.2s ease;
-}
-
-/* Button in Image Customization */
-#mainimagetext a {
+.image-content a {
   text-decoration: none;
   font-weight: 600;
-  margin: 0px;
   padding: 14px;
   border-radius: 15px;
-  top: 90px;
-  right: 55px;
-  margin-right: 25px;
-  position: relative;
-}
-
-#learnmore {
-  background-color: white;
-  color: #800080;
+  margin: 10px;
+  transition: background-color 0.3s;
 }
 
 #getstarted {
+  position: relative;
+  top: 11vh;
   background-color: #3498db;
   color: white;
 }
 
-/* Main contents */
+#learnmore {
+  position: relative;
+  top: 11vh;
+  background-color: white;
+  color: #800080;
+}
+
+.image-content a:hover {
+  opacity: 0.8;
+}
+
+/* Main Contents */
 .main-contents {
   text-align: left;
+  padding: 20px 15%;
   margin-top: 30px;
-  margin-left: 19%;
-  padding: 10px;
-  position: relative;
-  top: 59%;
 }
 
 #hotel-ticket {
-  cursor: default;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #333;
+  font-weight: bold;
 }
 
 /* Hotel Card Styles */
-.cards-room {
+.cards-room,
+.cards-services {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   flex-wrap: wrap;
-  margin-top: 30px;
-  position: relative;
-  right: 10px;
+  gap: 20px;
 }
 
-.card {
-  width: 380px;
-  margin: 10px;
+.card,
+.serviceCard {
+  flex: 0 1 calc(33.333% - 20px);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s;
+  text-align: center;
 }
 
-.card img {
+.card:hover,
+.serviceCard:hover {
+  transform: scale(1.05);
+}
+
+.card img,
+.serviceCard img {
   width: 100%;
   height: 200px;
   object-fit: cover;
   border-bottom: 1px solid #ddd;
 }
 
-.card h2 {
+.card h2,
+.serviceCard h2 {
   padding: 15px;
-  font-size: 1.5em;
+  font-size: 1.5rem;
   color: #333;
-  cursor: default;
 }
 
-.card p {
-  padding: 0 15px 15px 15px;
+.card p,
+.serviceCard p {
+  padding: 0 15px 15px;
   color: #666;
 }
 
-.btn {
+.card .btn {
   display: inline-block;
   padding: 10px 20px;
   margin: 10px;
   color: #fff;
-  text-decoration: none;
   background-color: #3498db;
   border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s;
 }
 
-.card:hover {
-  transform: scale(1.05);
+.card .btn:hover {
+  background-color: #057dcc;
 }
 
-/* reservation  */
+/* Reservation Form */
 .reservation-container {
   max-width: 510px;
-  margin: 50px 20%;
+  margin: 50px auto;
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  position: relative;
-  top: 70px;
-  left: 57px;
 }
 
 label {
@@ -282,70 +276,29 @@ label {
   text-align: left;
 }
 
-input {
-  width: calc(100% - 16px);
-
-  padding: 8px;
+input,
+select,
+button {
+  width: 100%;
+  padding: 10px;
   margin-bottom: 15px;
-  box-sizing: border-box;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  outline: none;
 }
 
 button {
   background-color: #3498db;
   color: #fff;
-  padding: 10px 15px;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-  width: 100%;
+  transition: background-color 0.3s;
 }
 
 button:hover {
   background-color: #057dcc;
 }
 
-/* Service Section */
-#services {
-  cursor: default;
-}
-
-.cards-services {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 30px;
-  position: relative;
-  right: 10px;
-}
-
-.serviceCard {
-  width: 380px;
-  margin: 10px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  transition: transform 0.3s ease-in-out;
-}
-
-.serviceCard img {
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-  border-bottom: 1px solid #ddd;
-}
-
-.serviceCard h2 {
-  padding: 15px;
-  font-size: 1.5em;
-  color: #333;
-  cursor: default;
-}
-
-.serviceCard p {
-  padding: 0 15px 15px 15px;
-  color: #666;
-}
-
-.serviceCard:hover {
-  transform: scale(1.05);
+#services{
+  margin-top: 50px;
 }
