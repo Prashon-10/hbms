@@ -7,21 +7,21 @@ include './config/connection.php';
 // Function to sanitize user inputs
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email =  $_POST['email'];
-    $password =  $_POST['password'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
     // Query to get user data
-    $query = "SELECT * FROM admins WHERE email = '$email' and password='" .md5($password)."';";
+    $query = "SELECT * FROM admins WHERE email = '$email' and password='" . md5($password) . "';";
     $result = $conn->query($query);
-//  echo $query; die;
+    //  echo $query; die;
     if ($result->num_rows > 0) {
         // Verify the password
         $user = $result->fetch_assoc();
-            $_SESSION['admin_id'] = $user['adid'];
-            $_SESSION['admin_email'] = $user['email'];
-            $_SESSION['role']='admin';
-            header('Location: dashboard.php');
-            exit();
+        $_SESSION['admin_id'] = $user['adid'];
+        $_SESSION['admin_email'] = $user['email'];
+        $_SESSION['role'] = 'admin';
+        header('Location: dashboard.php');
+        exit();
     } else {
         $_SESSION['error'] = "Invalid email or password!";
     }
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .login-container {
             background-color: #fff;
-            padding: 20px;
+            padding: 21px 43px 39px 35px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 300px;
@@ -71,13 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .login-container button {
-            width: 100%;
+            width: 108%;
             padding: 10px;
             background-color: #337ab7;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            position: relative;
         }
 
         .login-container button:hover {

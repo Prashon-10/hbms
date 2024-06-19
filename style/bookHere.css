@@ -8,9 +8,9 @@ body {
 }
 
 .gallery img {
-  width: 238px;
-  margin: 5px;
-  height: 186px;
+  width: 261px;
+  margin: 0px;
+  height: 208px;
   cursor: pointer;
   border-radius: 15px;
 }

@@ -26,11 +26,11 @@ if (!isset($_SESSION['email'])) {
             </div>
             <ul>
                 <li><a href="/hbms/index.php">Home</a></li>
-                <li><a href="#services">Service</a></li>
+                <!-- <li><a href="#services">Service</a></li> -->
                 <li><a href="../hbms/details.php">Rooms</a></li>
                 <li><a href="./contact.php">Contact</a></li>
                 <!-- <li><a href="./mybooking.php">My Booking</a></li> -->
-                <li><a href="/hbms/admin_login.php">Dashboard/Admin</a></li>
+                <li><a href="/hbms/admin_login.php">Admin</a></li>
                 <li><a href="/hbms/logout.php" id="logout">Logout</a></li>
 
 

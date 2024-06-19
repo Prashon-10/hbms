@@ -124,8 +124,8 @@ $conn->close();
             <img src="./images/hotel1.jpg" alt="Hotel Image 1" onclick="openModal('./images/hotel1.jpg')">
             <img src="./images/hotel2.jpg" alt="Hotel Image 2" onclick="openModal('./images/hotel2.jpg')">
             <img src="./images/hotel3.jpg" alt="Hotel Image 3" onclick="openModal('./images/hotel3.jpg')">
-            <img src="./images/hotel4.jpg" alt="Hotel Image 4" onclick="openModal('./images/hotel4.jpg')">
-            <img src="./images/hotel5.jpg" alt="Hotel Image 5" onclick="openModal('./images/hotel5.jpg')">
+            <!-- <img src="./images/hotel4.jpg" alt="Hotel Image 4" onclick="openModal('./images/hotel4.jpg')"> -->
+            <!-- <img src="./images/hotel5.jpg" alt="Hotel Image 5" onclick="openModal('./images/hotel5.jpg')"> -->
         </div>
 
         <div class="room-types">
