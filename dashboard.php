@@ -1,12 +1,7 @@
 <?php
 session_start();
 include './config/connection.php';
-
-// Check if admin is logged in
-if (!isset($_SESSION['admin'])) {
-    header('Location: admin.php');
-    exit();
-}
+include_once './includes/header.php';
 
 // Function to sanitize user inputs
 function sanitize($conn, $input)
@@ -20,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $room_id = sanitize($conn, $_POST['room_id']);
         $delete_query = "DELETE FROM rooms WHERE id = $room_id";
         if ($conn->query($delete_query)) {
-            // Redirect with success message
             $_SESSION['message'] = "Room deleted successfully!";
             header('Location: dashboard.php');
             exit();
@@ -29,10 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (isset($_POST['delete_user'])) {
         $user_id = sanitize($conn, $_POST['user_id']);
-        // Before deleting user, delete associated reservations (handled by ON DELETE CASCADE)
         $delete_query = "DELETE FROM users WHERE id = $user_id";
         if ($conn->query($delete_query)) {
-            // Redirect with success message
             $_SESSION['message'] = "User deleted successfully!";
             header('Location: dashboard.php');
             exit();
@@ -43,12 +35,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $booking_id = sanitize($conn, $_POST['booking_id']);
         $delete_query = "DELETE FROM reservations WHERE id = $booking_id";
         if ($conn->query($delete_query)) {
-            // Redirect with success message
             $_SESSION['message'] = "Booking deleted successfully!";
             header('Location: dashboard.php');
             exit();
         } else {
             $_SESSION['error'] = "Error deleting booking: " . $conn->error;
+        }
+    } elseif (isset($_POST['add_user'])) {
+        // Sanitize and validate inputs
+        $first_name = sanitize($conn, $_POST['first-name']);
+        $last_name = sanitize($conn, $_POST['last-name']);
+        $email = sanitize($conn, $_POST['email']);
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
+        // You can add more validations if needed
+
+        // Insert into database
+        $insert_query = "INSERT INTO users (firstName, lastName, email, password) 
+                         VALUES ('$first_name', '$last_name', '$email', '$password')";
+
+        if ($conn->query($insert_query)) {
+            $_SESSION['message'] = "User added successfully!";
+            header('Location: dashboard.php');
+            exit();
+        } else {
+            $_SESSION['error'] = "Error adding user: " . $conn->error;
         }
     }
 }
@@ -64,7 +74,6 @@ $bookings_result = $conn->query($bookings_query);
 
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -130,67 +139,55 @@ $conn->close();
             border-radius: 4px;
         }
 
-        form {
-            display: inline-block;
+        .action-buttons {
+            display: flex;
+            gap: 10px;
         }
 
-        form button {
-            background-color: #d9534f;
-            color: #fff;
+        .action-buttons form {
+            display: inline;
+        }
+
+        .action-buttons button,
+        .action-buttons a {
+            padding: 5px 10px;
             border: none;
-            padding: 6px 12px;
-            cursor: pointer;
             border-radius: 4px;
-        }
-
-        form button:hover {
-            background-color: #c9302c;
-        }
-
-        .add-button {
-            background-color: #5cb85c;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
             cursor: pointer;
-            border-radius: 4px;
             text-decoration: none;
-            display: inline-block;
-            margin-bottom: 10px;
+            color: white;
+            height:40px;
         }
 
-        .add-button:hover {
+        .action-buttons .edit-btn {
+            background-color: #5cb85c;
+        }
+
+        .action-buttons .delete-btn {
+            background-color: #d9534f;
+        }
+
+        .action-buttons .add-btn {
+            background-color: #337ab7;
+        }
+
+        .action-buttons .edit-btn:hover {
             background-color: #4cae4c;
         }
 
-        @media only screen and (max-width: 768px) {
+        .action-buttons .delete-btn:hover {
+            background-color: #c9302c;
+        }
 
-            /* Responsive design adjustments */
-            .container {
-                padding: 10px;
-            }
-
-            table {
-                font-size: 14px;
-            }
-
-            table th,
-            table td {
-                padding: 6px;
-            }
-
-            .add-button,
-            form button {
-                padding: 8px 12px;
-                font-size: 14px;
-            }
+        .action-buttons .add-btn:hover {
+            background-color: #286090;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h2>Dashboard</h2>
+        <h2>Admin Dashboard</h2>
 
         <?php if (isset($_SESSION['message'])): ?>
             <p class="message"><?= $_SESSION['message']; ?></p>
@@ -202,88 +199,101 @@ $conn->close();
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
 
-        <h3>Manage Rooms</h3>
-        <a href="add_room.php" class="add-button">Add Room</a>
+        <h3>Rooms</h3>
+        <a href="add_room.php" class="action-buttons edit-btn">Add Room</a>
         <table>
-            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+            <?php $room_counter = 1; ?>
+            <?php while ($room = $rooms_result->fetch_assoc()): ?>
                 <tr>
-                    <th>ID</th>
-                    <th>Type</th>
-                    <th>Price</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($room = $rooms_result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= $room['id']; ?></td>
-                        <td><?= $room['type']; ?></td>
-                        <td>$<?= $room['price']; ?></td>
-                        <td>
+                    <td><?= $room_counter++; ?></td>
+                    <td><?= $room['type']; ?></td>
+                    <td><?= $room['price']; ?></td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="edit_room.php?id=<?= $room['id']; ?>" class="edit-btn">Edit</a>
                             <form action="" method="POST">
                                 <input type="hidden" name="room_id" value="<?= $room['id']; ?>">
-                                <button type="submit" name="delete_room">Delete</button>
+                                <button type="submit" name="delete_room" class="delete-btn">Delete</button>
                             </form>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
+                        </div>
+                    </td>
+                </tr>
+            <?php endwhile; ?>
         </table>
 
-        <h3>Manage Users</h3>
+        <h3>Users</h3>
+        <a href="add_user.php" class="action-buttons add-btn">Add User</a>
         <table>
-            <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+            <?php $user_counter = 1; ?>
+            <?php while ($user = $users_result->fetch_assoc()): ?>
                 <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($user = $users_result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= $user['id']; ?></td>
-                        <td><?= $user['email']; ?></td>
-                        <td>
+                    <td><?= $user_counter++; ?></td>
+                    <td><?= $user['firstName']; ?></td>
+                    <td><?= $user['lastName']; ?></td>
+                    <td><?= $user['email']; ?></td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="edit_user.php?id=<?= $user['id']; ?>" class="edit-btn">Edit</a>
                             <form action="" method="POST">
                                 <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
-                                <button type="submit" name="delete_user">Delete</button>
+                                <button type="submit" name="delete_user" class="delete-btn">Delete</button>
                             </form>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
+                        </div>
+                    </td>
+                </tr>
+            <?php endwhile; ?>
         </table>
 
-        <h3>Manage Bookings</h3>
+        <h3>Bookings</h3>
         <table>
-            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Room Type</th>
+                <th>Check-in Date</th>
+                <th>Check-out Date</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+            <?php $booking_counter = 1; ?>
+            <?php while ($booking = $bookings_result->fetch_assoc()): ?>
                 <tr>
-                    <th>ID</th>
-                    <th>User ID</th>
-                    <th>Room Type</th>
-                    <th>Check-in Date</th>
-                    <th>Check-out Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($booking = $bookings_result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= $booking['id']; ?></td>
-                        <td><?= $booking['user_id']; ?></td>
-                        <td><?= $booking['room_type']; ?></td>
-                        <td><?= $booking['check_in_date']; ?></td>
-                        <td><?= $booking['check_out_date']; ?></td>
-                        <td>
+                    <td><?= $booking_counter++; ?></td>
+                    <td><?= $booking['room_type']; ?></td>
+                    <td><?= $booking['check_in_date']; ?></td>
+                    <td><?= $booking['check_out_date']; ?></td>
+                    <td><?= $booking['first_name']; ?></td>
+                    <td><?= $booking['last_name']; ?></td>
+                    <td><?= $booking['email']; ?></td>
+                    <td><?= $booking['phone_number']; ?></td>
+                    <td><?= $booking['address']; ?></td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="edit_booking.php?id=<?= $booking['id']; ?>" class="edit-btn">Edit</a>
                             <form action="" method="POST">
                                 <input type="hidden" name="booking_id" value="<?= $booking['id']; ?>">
-                                <button type="submit" name="delete_booking">Delete</button>
+                                <button type="submit" name="delete_booking" class="delete-btn">Delete</button>
                             </form>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
+                        </div>
+                    </td>
+                </tr>
+            <?php endwhile; ?>
         </table>
     </div>
 </body>

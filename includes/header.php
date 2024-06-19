@@ -14,7 +14,7 @@ if (!isset($_SESSION['email'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title></title>
-    <link rel="stylesheet" href="/hbms/style/index.css" /> <!-- Use an absolute path -->
+    <link rel="stylesheet" href="/hbms/style/index.css" />
 </head>
 
 <body>
@@ -27,8 +27,10 @@ if (!isset($_SESSION['email'])) {
             <ul>
                 <li><a href="/hbms/index.php">Home</a></li>
                 <li><a href="#services">Service</a></li>
-                <li><a href="#hotel-ticket">Rooms</a></li>
+                <li><a href="../hbms/details.php">Rooms</a></li>
                 <li><a href="./contact.php">Contact</a></li>
+                <!-- <li><a href="./mybooking.php">My Booking</a></li> -->
+                <!-- <li><a href="/hbms/dashboard.php">Dashboard/Admin</a></li> -->
                 <li><a href="/hbms/logout.php" id="logout">Logout</a></li>
 
 

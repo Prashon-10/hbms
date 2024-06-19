@@ -1,53 +1,61 @@
 <?php
 session_start();
-include ("./config/connection.php");
-
+include("./config/connection.php");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['signIn'])) {
-        $username = $_POST['username'];
+        $email = $_POST['email'];
         $password = $_POST['password'];
 
-        // Check if the user is an admin
-        $admin_query = "SELECT * FROM admins WHERE username = ?";
-        $admin_stmt = $conn->prepare($admin_query);
-        $admin_stmt->bind_param("s", $username);
-        $admin_stmt->execute();
-        $admin_result = $admin_stmt->get_result();
-        $admin = $admin_result->fetch_assoc();
-
-        if ($admin && password_verify($password, $admin['password'])) {
-            // Admin login successful
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['admin_username'] = $username;
-            header("Location: dashboard.php");
-            exit();
-        } else {
-            // Check if the user is a regular user
-            $user_query = "SELECT * FROM users WHERE email = ?";
-            $user_stmt = $conn->prepare($user_query);
-            $user_stmt->bind_param("s", $username);
-            $user_stmt->execute();
-            $user_result = $user_stmt->get_result();
-            $user = $user_result->fetch_assoc();
-
-            if ($user && password_verify($password, $user['password'])) {
-                // Regular user login successful
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['email'] = $username; // Store email in session for regular user
+        // Prepare the query to fetch user by email
+        $query = "SELECT * FROM users WHERE email=?";
+        
+        // Prepare statement
+        $stmt = $conn->prepare($query);
+        
+        if ($stmt === false) {
+            die('MySQL prepare error: ' . htmlspecialchars($conn->error));
+        }
+        
+        // Bind parameters
+        $stmt->bind_param("s", $email);
+        
+        // Execute query
+        $stmt->execute();
+        
+        // Get result
+        $result = $stmt->get_result();
+        
+        // Check if user exists and verify password
+        if ($result->num_rows == 1) {
+            $user = $result->fetch_assoc();
+            if (password_verify($password, $user['password'])) {
+                // Password is correct, set session variables
+                $_SESSION['email'] = $email;
+                
+                // Debug: Output session variables
+                echo '<pre>';
+                var_dump($_SESSION);
+                echo '</pre>';
+                
                 header("Location: index.php");
                 exit();
             } else {
-                $message = "Invalid username or password.";
+                // Incorrect password
+                $message = "Invalid email or password.";
             }
+        } else {
+            // User not found
+            $message = "Invalid email or password.";
         }
+        
+        // Close statement
+        $stmt->close();
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,7 +63,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="./style/register.css">
 </head>
-
 <body>
     <div class="container" id="signup" style="display:none;">
         <h1 class="form-title">Register</h1>
@@ -63,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="input-group">
                 <i class="fas fa-user"></i>
                 <input type="text" name="fName" id="fName" placeholder="First Name" required>
-                <label for="fName">First Name</label>
+                <label for="fname">First Name</label>
             </div>
             <div class="input-group">
                 <i class="fas fa-user"></i>
@@ -97,12 +104,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <div class="container" id="signIn">
         <h1 class="form-title">Sign In</h1>
-        <?php if (!empty($message)) { echo '<p class="message">' . $message . '</p>'; } ?>
+        <?php if (!empty($message)) {
+            echo '<p class="message">' . $message . '</p>';
+        } ?>
         <form method="post" action="">
             <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" name="username" id="username" placeholder="Username" required>
-                <label for="username">Username</label>
+                <i class="fas fa-envelope"></i>
+                <input type="email" name="email" id="email" placeholder="Email" required>
+                <label for="email">Email</label>
             </div>
             <div class="input-group">
                 <i class="fas fa-lock"></i>
@@ -126,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button id="signUpButton">Sign Up</button>
         </div>
     </div>
+
     <script src="./js/login-reg.js"></script>
 </body>
-
 </html>

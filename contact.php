@@ -1,7 +1,6 @@
 <?php
 include ("./config/connection.php");
 // include header
-// include ("./includes/header.php");
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +33,7 @@ include ("./config/connection.php");
 <body>
 
     <div class="container">
+        
         <h1>Contact Us - Hotel Dynasty</h1>
         <p>Welcome to Hotel Dynasty. Feel free to contact us using the form below.</p>
 

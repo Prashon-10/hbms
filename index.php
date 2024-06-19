@@ -1,7 +1,7 @@
 <?php
 session_start();
-// include("includes/header.php");
-include("config/connection.php");
+include("includes/header.php");
+include ("config/connection.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $check_in_date = $_POST['check-in-date'];
@@ -45,8 +45,43 @@ $conn->close();
 </div>
 
 <div class="main-contents">
+
+    <!-- <div class="reservation-container">
+        <h1>Room Reservation</h1>
+
+
+        <form id="reservation-form" method="post" action="index.php">
+            <label for="check-in-date">Check-In Date:</label>
+            <input type="date" id="check-in-date" name="check-in-date" required>
+
+            <label for="check-out-date">Check-Out Date:</label>
+            <input type="date" id="check-out-date" name="check-out-date" required>
+
+            <label for="room-type">Room Type:</label>
+            <select id="room-type" name="room-type">
+                <option value="normal">Normal Room</option>
+                <option value="deluxe">Deluxe Suite</option>
+                <option value="executive">Executive Room</option>
+                <option value="premium">Premium Suite</option>
+            </select>
+
+            <button type="submit">Reserve Room</button>
+        </form>
+
+    </div> -->
+
+    <!-- <h1 id="about-hotel">About</h1>
+    <div class="about-myhotel">
+        <img src="./images/hotel.jpg" alt="hotel">
+        <p>Hotel Dynasty is a luxury hotel located in the heart of the city, offering a perfect blend of modern
+            amenities and traditional hospitality. Our hotel features elegantly designed rooms and suites, a
+            multi-cuisine restaurant, a rooftop bar, a fitness center, and a spa. Whether you are traveling for
+            business or leisure, Hotel Dynasty is the ideal choice for a comfortable and memorable stay.</p>
+    </div> -->
+
     <h1 id="hotel-ticket">Rooms</h1>
     <div class="cards-room">
+
         <div class="card">
             <img src="./images/room-types/normal.jpg" alt="Normal">
             <h2>Normal Room</h2>
@@ -72,12 +107,15 @@ $conn->close();
             <img src="./images/room-types/premium.jpg" alt="Premium">
             <h2>Premium Suite</h2>
             <p>Elegant suite with premium amenities for a luxurious experience.</p>
-            <a href="details.php?type=premium&price=350" class="btn">Book Now</a>
+            <a href="details.php?type=premium&price=350sdkfsdfjksjdfjksdfjksdkf" class="btn">Book Now</a>
+
         </div>
+
     </div>
 
     <h1 id="services">Services</h1>
     <div class="cards-services">
+
         <div class="serviceCard">
             <img src="./images/services/RoomService.jpg" alt="Normal">
             <h2>Room Service</h2>
@@ -113,7 +151,7 @@ $conn->close();
             <h2>Conference Room Booking</h2>
             <p>Host your meetings and events with our well-equipped conference rooms. Book in advance.</p>
         </div>
+
     </div>
 
     <?php include_once "includes/footer.php" ?>
-</html>

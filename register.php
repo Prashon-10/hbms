@@ -1,39 +1,27 @@
 <?php
-session_start();
-include("./config/connection.php");
+include './config/connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validate and sanitize inputs
-    $firstName = filter_var($_POST["fName"], FILTER_SANITIZE_STRING);
-    $lastName = filter_var($_POST["lName"], FILTER_SANITIZE_STRING);
-    $email = filter_var($_POST["email"], FILTER_SANITIZE_EMAIL);
-    $password = $_POST["password"]; // No need to sanitize password
+    if (isset($_POST['signUp'])) {
+        $firstName = $_POST['fName'];
+        $lastName = $_POST['lName'];
+        $email = $_POST['email'];
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Hash the password before saving
-    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        $insert_query = "INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($insert_query);
+        $stmt->bind_param("ssss", $firstName, $lastName, $email, $password);
 
-    // Prepare SQL statement with prepared statement
-    $sql = "INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)";
-    
-    // Bind parameters to statement
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "ssss", $firstName, $lastName, $email, $hashed_password);
+        if ($stmt->execute()) {
+            echo "Registration successful!";
+        } else {
+            echo "Error: " . $stmt->error;
+        }
 
-    // Execute the statement
-    if (mysqli_stmt_execute($stmt)) {
-        echo "Registration successful.";
-        header("Location: login.php");
-        exit(); // Ensure script stops here after redirection
-    } else {
-        echo "Error: " . mysqli_stmt_error($stmt);
+        $stmt->close();
     }
-
-    // Close statement and connection
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
