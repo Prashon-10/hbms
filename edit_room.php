@@ -1,7 +1,7 @@
 <?php
 session_start();
 include './config/connection.php';
-include_once './includes/header.php';
+// include_once './includes/header.php';
 
 // Function to sanitize user inputs
 function sanitize($conn, $input)

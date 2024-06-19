@@ -30,7 +30,7 @@ if (!isset($_SESSION['email'])) {
                 <li><a href="../hbms/details.php">Rooms</a></li>
                 <li><a href="./contact.php">Contact</a></li>
                 <!-- <li><a href="./mybooking.php">My Booking</a></li> -->
-                <!-- <li><a href="/hbms/dashboard.php">Dashboard/Admin</a></li> -->
+                <li><a href="/hbms/admin_login.php">Dashboard/Admin</a></li>
                 <li><a href="/hbms/logout.php" id="logout">Logout</a></li>
 
 

@@ -1,5 +1,12 @@
 <?php
 session_start();
+// echo "<pre>";
+// print_r($_SESSION);
+// echo "</pre>";
+if($_SESSION['role']!='admin'){
+    header("Location: login.php");
+    exit();
+}
 include './config/connection.php';
 include_once './includes/header.php';
 
@@ -10,6 +17,7 @@ function sanitize($conn, $input)
 }
 
 // Handle delete operations for rooms, users, and bookings
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['delete_room'])) {
         $room_id = sanitize($conn, $_POST['room_id']);
