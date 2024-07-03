@@ -4,7 +4,6 @@ include './config/connection.php';
 
 
 // admin123@gmail.com          admin123
-// Function to sanitize user inputs
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];

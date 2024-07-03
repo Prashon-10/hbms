@@ -1,125 +1,164 @@
 <?php
 session_start();
-include 'config/connection.php';
-
-// Redirect to login if session email is not set
-if (!isset($_SESSION['email'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
+include './config/connection.php';
+include_once './includes/header.php';
 
-$user_email = $_SESSION['email'];
-
-// Fetch user data based on session email
-$query = "SELECT * FROM users WHERE email='$user_email'";
-$result = $conn->query($query);
-
-// If user not found, display an error message and exit
-if ($result && $result->num_rows > 0) {
-    $user = $result->fetch_assoc();
-    $is_admin = $user['is_admin']; // Check if user is admin
-} else {
-    echo "User not found.";
-    exit();
+// Function to sanitize user inputs
+function sanitize($conn, $input)
+{
+    return mysqli_real_escape_string($conn, htmlspecialchars(strip_tags(trim($input))));
 }
 
-// Check if the logged-in user is an admin
-if ($is_admin != 1) {
-    echo "Access denied. You are not authorized to view this page.";
-    exit();
-}
+// Fetch user data
+$user_id = $_SESSION['user_id'];
+$user_query = "SELECT * FROM users WHERE id = $user_id";
+$user_result = $conn->query($user_query);
+$user_data = $user_result->fetch_assoc();
 
-$message = '';
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first_name = sanitize($conn, $_POST['first_name']);
+    $last_name = sanitize($conn, $_POST['last_name']);
+    $email = sanitize($conn, $_POST['email']);
+    $phone = sanitize($conn, $_POST['phone']);
+    $dob = sanitize($conn, $_POST['dob']);
+    $gender = sanitize($conn, $_POST['gender']);
 
-// Handle form submissions
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['update'])) {
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $fullname = $_POST['fullname'];
-        $phone = $_POST['phone'];
-        $address = $_POST['address'];
-        $password = $_POST['password'];
-
-        // Update password only if a new password is provided
-        if (!empty($password)) {
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $query = "UPDATE users SET username='$username', email='$email', password='$hashed_password', fullname='$fullname', phone='$phone', address='$address' WHERE email='$user_email'";
+    // Handle file upload
+    $profile_image = $user_data['profileImage']; // Default to existing image
+    if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = 'uploads/';
+        $upload_file = $upload_dir . basename($_FILES['profile_image']['name']);
+        if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $upload_file)) {
+            $profile_image = $_FILES['profile_image']['name'];
         } else {
-            $query = "UPDATE users SET username='$username', email='$email', fullname='$fullname', phone='$phone', address='$address' WHERE email='$user_email'";
+            $_SESSION['error'] = "Error uploading profile image.";
         }
+    }
 
-        if ($conn->query($query) === TRUE) {
-            $message = "Profile updated successfully";
-            $_SESSION['email'] = $email; // Update session email if email was changed
-        } else {
-            $message = "Error updating profile: " . $conn->error;
-        }
-    } elseif (isset($_POST['delete'])) {
-        // Delete account logic (Optional)
-        // $query = "DELETE FROM users WHERE email='$user_email'";
-        // if ($conn->query($query) === TRUE) {
-        //     session_destroy();
-        //     header("Location: index.php");
-        //     exit();
-        // } else {
-        //     $message = "Error deleting account: " . $conn->error;
-        // }
+    // Update user data
+    $update_query = "UPDATE users SET 
+                     firstName = '$first_name', 
+                     lastName = '$last_name', 
+                     email = '$email', 
+                     phone = '$phone', 
+                     dob = '$dob', 
+                     gender = '$gender',
+                     profileImage = '$profile_image'
+                     WHERE id = $user_id";
+
+    if ($conn->query($update_query)) {
+        $_SESSION['message'] = "Account updated successfully!";
+        header('Location: account.php');
+        exit();
+    } else {
+        $_SESSION['error'] = "Error updating account: " . $conn->error;
     }
 }
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="style/account.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account</title>
+    <style>
+        .profile-image-preview {
+            width: 515px;
+            /* height: 100px; */
+            /* border-radius: 50%; */
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .message {
+            background: #588e58;
+            color: white;
+            padding: 10px;
+            margin: 7px 0px;
+            border-radius: 10px;
+            width: 281px;
+            height: 41px;
+        }
+    </style>
+    <script>
+        function previewProfileImage(event) {
+            const input = event.target;
+            const reader = new FileReader();
+            reader.onload = function() {
+                const dataURL = reader.result;
+                const output = document.getElementById('profileImagePreview');
+                output.src = dataURL;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    </script>
 </head>
 
 <body>
-    <?php include 'includes/header.php'; ?>
-    <div class="admin-dashboard">
-        <h2>Admin Dashboard</h2>
-        <?php if (!empty($message)) {
-            echo '<p class="message">' . $message . '</p>';
-        } ?>
-        <p>Welcome, <?php echo htmlspecialchars($user['username']); ?>!</p>
-        <p>This is the admin dashboard.</p>
-        <!-- Admin-specific actions here -->
-        <form method="POST" action="account.php">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($user['username']); ?>"
-                required>
+    <div class="container">
+        <h2>My Account</h2>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>"
-                required>
+        <?php if (isset($_SESSION['message'])) : ?>
+            <p class="message"><?= $_SESSION['message']; ?></p>
+            <?php unset($_SESSION['message']); ?>
+        <?php endif; ?>
 
-            <label for="fullname">Full Name:</label>
-            <input type="text" id="fullname" name="fullname" value="<?php echo htmlspecialchars($user['fullname']); ?>"
-                required>
+        <?php if (isset($_SESSION['error'])) : ?>
+            <p class="error"><?= $_SESSION['error']; ?></p>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
 
-            <label for="phone">Phone:</label>
-            <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($user['phone']); ?>" required>
-
-            <label for="address">Address:</label>
-            <input type="text" id="address" name="address" value="<?php echo htmlspecialchars($user['address']); ?>"
-                required>
-
-            <label for="password">New Password (leave blank to keep current):</label>
-            <input type="password" id="password" name="password">
-
-            <input type="submit" name="update" value="Update Profile">
-            <!-- <input type="submit" name="delete" value="Delete Account"
-                onclick="return confirm('Are you sure you want to delete your account?');"> -->
+        <form action="account.php" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" value="<?= $user_data['firstName']; ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" value="<?= $user_data['lastName']; ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="<?= $user_data['email']; ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone" value="<?= $user_data['phone']; ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" value="<?= $user_data['dob']; ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="male" <?= $user_data['gender'] == 'male' ? 'selected' : ''; ?>>Male</option>
+                    <option value="female" <?= $user_data['gender'] == 'female' ? 'selected' : ''; ?>>Female</option>
+                    <option value="other" <?= $user_data['gender'] == 'other' ? 'selected' : ''; ?>>Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="profile_image">Profile Image:</label>
+                <input type="file" id="profile_image" name="profile_image" accept="image/*" onchange="previewProfileImage(event)">
+                <br>
+                <img id="profileImagePreview" src="uploads/<?= $user_data['profileImage']; ?>" alt="Profile Image" class="profile-image-preview">
+            </div>
+            <button type="submit">Update</button>
         </form>
     </div>
-    <?php include 'includes/footer.php'; ?>
 </body>
 
 </html>
-
-<?php
-$conn->close(); // Close database connection
-?>

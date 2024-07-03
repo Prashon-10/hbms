@@ -31,6 +31,7 @@ if (!isset($_SESSION['email'])) {
                 <li><a href="./my_booking.php">My Booking</a></li>
                 <li><a href="/hbms/admin_login.php">Admin</a></li>
                 <li><a href="/hbms/logout.php" id="logout">Logout</a></li>
+                <li><a href="/hbms/account.php">My Profile</a></li>
 
 
             </ul>

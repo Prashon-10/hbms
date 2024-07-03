@@ -75,7 +75,7 @@ $conn->close();
         }
 
         .container {
-            max-width: 600px;
+            max-width: 990px;
             margin: 20px auto;
             background-color: #fff;
             padding: 20px;
@@ -129,6 +129,15 @@ $conn->close();
             border-radius: 4px;
             text-align: center;
         }
+
+        .profile-image-preview {
+            width: 515px;
+            /* height: 150px; */
+            object-fit: cover;
+            /* border-radius: 50%; */
+            margin: 10px auto;
+            display: block;
+        }
     </style>
 </head>
 
@@ -162,15 +171,29 @@ $conn->close();
             <input type="text" id="gender" name="gender" value="<?= isset($user['gender']) ? $user['gender'] : ''; ?>" required>
 
             <label for="profileImage">Profile Image:</label>
-            <input type="file" id="profileImage" name="profileImage">
+            <input type="file" id="profileImage" name="profileImage" onchange="previewProfileImage(event)">
             <?php if (!empty($user['profileImage'])) : ?>
-                <img src="uploads/<?= $user['profileImage']; ?>" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 50%;">
+                <img id="profileImagePreview" src="uploads/<?= $user['profileImage']; ?>" alt="Profile Image" class="profile-image-preview">
+            <?php else : ?>
+                <img id="profileImagePreview" src="uploads/default-profile.jpg" alt="Profile Image" class="profile-image-preview">
             <?php endif; ?>
 
             <button type="submit">Update User</button>
         </form>
     </div>
+
+    <script>
+        function previewProfileImage(event) {
+            const input = event.target;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileImagePreview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 </body>
 
 </html>
-100px
