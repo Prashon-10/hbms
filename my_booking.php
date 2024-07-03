@@ -35,6 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_booking'])) {
 $bookings_query = "SELECT * FROM reservations WHERE user_id = $user_id";
 $bookings_result = $conn->query($bookings_query);
 
+if (!$bookings_result) {
+    $_SESSION['error'] = "Error fetching bookings: " . $conn->error;
+}
+
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -140,23 +144,29 @@ $conn->close();
                 <th>Check-out Date</th>
                 <th>Actions</th>
             </tr>
-            <?php $booking_counter = 1; ?>
-            <?php while ($booking = $bookings_result->fetch_assoc()): ?>
+            <?php if ($bookings_result && $bookings_result->num_rows > 0): ?>
+                <?php $booking_counter = 1; ?>
+                <?php while ($booking = $bookings_result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= $booking_counter++; ?></td>
+                        <td><?= $booking['room_type']; ?></td>
+                        <td><?= $booking['check_in_date']; ?></td>
+                        <td><?= $booking['check_out_date']; ?></td>
+                        <td>
+                            <div class="action-buttons">
+                                <form action="" method="POST">
+                                    <input type="hidden" name="booking_id" value="<?= $booking['id']; ?>">
+                                    <button type="submit" name="cancel_booking">Cancel Booking</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
                 <tr>
-                    <td><?= $booking_counter++; ?></td>
-                    <td><?= $booking['room_type']; ?></td>
-                    <td><?= $booking['check_in_date']; ?></td>
-                    <td><?= $booking['check_out_date']; ?></td>
-                    <td>
-                        <div class="action-buttons">
-                            <form action="" method="POST">
-                                <input type="hidden" name="booking_id" value="<?= $booking['id']; ?>">
-                                <button type="submit" name="cancel_booking">Cancel Booking</button>
-                            </form>
-                        </div>
-                    </td>
+                    <td colspan="5">No bookings found.</td>
                 </tr>
-            <?php endwhile; ?>
+            <?php endif; ?>
         </table>
     </div>
 </body>
