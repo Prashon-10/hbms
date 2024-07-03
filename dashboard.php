@@ -1,9 +1,6 @@
 <?php
 session_start();
-// echo "<pre>";
-// print_r($_SESSION);
-// echo "</pre>";
-if($_SESSION['role']!='admin'){
+if ($_SESSION['role'] != 'admin') {
     header("Location: login.php");
     exit();
 }
@@ -17,7 +14,6 @@ function sanitize($conn, $input)
 }
 
 // Handle delete operations for rooms, users, and bookings
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['delete_room'])) {
         $room_id = sanitize($conn, $_POST['room_id']);
@@ -54,12 +50,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $first_name = sanitize($conn, $_POST['first-name']);
         $last_name = sanitize($conn, $_POST['last-name']);
         $email = sanitize($conn, $_POST['email']);
+        $phone = sanitize($conn, $_POST['phone']);
+        $dob = sanitize($conn, $_POST['dob']);
+        $gender = sanitize($conn, $_POST['gender']);
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
         // You can add more validations if needed
 
         // Insert into database
-        $insert_query = "INSERT INTO users (firstName, lastName, email, password) 
-                         VALUES ('$first_name', '$last_name', '$email', '$password')";
+        $insert_query = "INSERT INTO users (firstName, lastName, email, phone, dob, gender password) 
+                         VALUES ('$first_name', '$last_name', '$email', '$phone', '$dob', '$gender', '$password')";
 
         if ($conn->query($insert_query)) {
             $_SESSION['message'] = "User added successfully!";
@@ -79,6 +78,11 @@ $bookings_query = "SELECT * FROM reservations";
 $rooms_result = $conn->query($rooms_query);
 $users_result = $conn->query($users_query);
 $bookings_result = $conn->query($bookings_query);
+
+// Fetch total bookings and total amount collected
+$total_bookings_query = "SELECT COUNT(*) AS total_bookings, SUM(price) AS total_amount FROM reservations";
+$total_result = $conn->query($total_bookings_query);
+$total_data = $total_result->fetch_assoc();
 
 $conn->close();
 ?>
@@ -129,6 +133,12 @@ $conn->close();
             background-color: #f2f2f2;
         }
 
+        #summary {
+            font-size: 27px;
+            font-weight: bold;
+            color: purple;
+        }
+
         .message {
             background-color: #dff0d8;
             color: #3c763d;
@@ -164,7 +174,7 @@ $conn->close();
             cursor: pointer;
             text-decoration: none;
             color: white;
-            height:40px;
+            height: 40px;
         }
 
         .action-buttons .edit-btn {
@@ -197,16 +207,21 @@ $conn->close();
     <div class="container">
         <h2>Admin Dashboard</h2>
 
-        <?php if (isset($_SESSION['message'])): ?>
+        <?php if (isset($_SESSION['message'])) : ?>
             <p class="message"><?= $_SESSION['message']; ?></p>
             <?php unset($_SESSION['message']); ?>
         <?php endif; ?>
 
-        <?php if (isset($_SESSION['error'])): ?>
+        <?php if (isset($_SESSION['error'])) : ?>
             <p class="error"><?= $_SESSION['error']; ?></p>
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
 
+        <!-- Display total bookings and total amount collected -->
+        <div id="summary">
+            <p>Total Number of Bookings: <?= $total_data['total_bookings']; ?></p>
+            <p>Total Amount Collected: $<?= number_format($total_data['total_amount'], 2); ?></p>
+        </div>
         <h3>Rooms</h3>
         <a href="add_room.php" class="action-buttons edit-btn">Add Room</a>
         <table>
@@ -217,7 +232,7 @@ $conn->close();
                 <th>Actions</th>
             </tr>
             <?php $room_counter = 1; ?>
-            <?php while ($room = $rooms_result->fetch_assoc()): ?>
+            <?php while ($room = $rooms_result->fetch_assoc()) : ?>
                 <tr>
                     <td><?= $room_counter++; ?></td>
                     <td><?= $room['type']; ?></td>
@@ -236,22 +251,36 @@ $conn->close();
         </table>
 
         <h3>Users</h3>
-        <a href="add_user.php" class="action-buttons add-btn">Add User</a>
+        <!-- <a href="add_user.php" class="action-buttons add-btn">Add User</a> -->
         <table>
             <tr>
                 <th>ID</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
+                <th>Phone</th>
+                <th>DOB</th>
+                <th>gender</th>
+                <th>Profile Image</th>
                 <th>Actions</th>
             </tr>
             <?php $user_counter = 1; ?>
-            <?php while ($user = $users_result->fetch_assoc()): ?>
+            <?php while ($user = $users_result->fetch_assoc()) : ?>
                 <tr>
                     <td><?= $user_counter++; ?></td>
                     <td><?= $user['firstName']; ?></td>
                     <td><?= $user['lastName']; ?></td>
                     <td><?= $user['email']; ?></td>
+                    <td><?= $user['phone']; ?></td>
+                    <td><?= $user['dob']; ?></td>
+                    <td><?= $user['gender']; ?></td>
+                    <td>
+                        <?php if (!empty($user['profileImage'])) : ?>
+                            <img src="uploads/<?= $user['profileImage']; ?>" alt="Profile Image" style="width: 50px; height: 50px; border-radius: 50%;">
+                        <?php else : ?>
+                            No Image
+                        <?php endif; ?>
+                    </td>
                     <td>
                         <div class="action-buttons">
                             <a href="edit_user.php?id=<?= $user['id']; ?>" class="edit-btn">Edit</a>
@@ -280,7 +309,7 @@ $conn->close();
                 <th>Actions</th>
             </tr>
             <?php $booking_counter = 1; ?>
-            <?php while ($booking = $bookings_result->fetch_assoc()): ?>
+            <?php while ($booking = $bookings_result->fetch_assoc()) : ?>
                 <tr>
                     <td><?= $booking_counter++; ?></td>
                     <td><?= $booking['room_type']; ?></td>

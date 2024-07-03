@@ -33,8 +33,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstName = sanitize($conn, $_POST['firstName']);
     $lastName = sanitize($conn, $_POST['lastName']);
     $email = sanitize($conn, $_POST['email']);
+    $phone = sanitize($conn, $_POST['phone']);
+    $dob = sanitize($conn, $_POST['dob']);
+    $gender = sanitize($conn, $_POST['gender']);
+    $profileImage = $_FILES['profileImage']['name'];
+    $upload_dir = 'uploads/';
+    $target_file = $upload_dir . basename($profileImage);
 
-    $update_query = "UPDATE users SET firstName = '$firstName', lastName = '$lastName', email = '$email' WHERE id = $user_id";
+    if (!empty($profileImage)) {
+        move_uploaded_file($_FILES['profileImage']['tmp_name'], $target_file);
+        $update_query = "UPDATE users SET firstName = '$firstName', lastName = '$lastName', email = '$email', phone = '$phone', dob = '$dob', gender= '$gender', profileImage = '$profileImage' WHERE id = $user_id";
+    } else {
+        $update_query = "UPDATE users SET firstName = '$firstName', lastName = '$lastName', email = '$email', phone = '$phone', dob = '$dob', gender= '$gender' WHERE id = $user_id";
+    }
+
     if ($conn->query($update_query)) {
         $_SESSION['message'] = "User updated successfully!";
         header('Location: dashboard.php');
@@ -85,7 +97,9 @@ $conn->close();
             margin-bottom: 8px;
         }
 
-        form input[type="text"] {
+        form input[type="text"],
+        form input[type="file"],
+        form textarea {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
@@ -122,12 +136,12 @@ $conn->close();
     <div class="container">
         <h2>Edit User</h2>
 
-        <?php if (isset($_SESSION['error'])): ?>
+        <?php if (isset($_SESSION['error'])) : ?>
             <p class="error-message"><?= $_SESSION['error']; ?></p>
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
 
-        <form action="" method="POST">
+        <form action="" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
             <label for="firstName">First Name:</label>
             <input type="text" id="firstName" name="firstName" value="<?= isset($user['firstName']) ? $user['firstName'] : ''; ?>" required>
@@ -138,9 +152,25 @@ $conn->close();
             <label for="email">Email:</label>
             <input type="text" id="email" name="email" value="<?= $user['email']; ?>" required>
 
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" value="<?= isset($user['phone']) ? $user['phone'] : ''; ?>" required>
+
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" value="<?= isset($user['dob']) ? $user['dob'] : ''; ?>" required>
+
+            <label for="gender">Gender:</label>
+            <input type="text" id="gender" name="gender" value="<?= isset($user['gender']) ? $user['gender'] : ''; ?>" required>
+
+            <label for="profileImage">Profile Image:</label>
+            <input type="file" id="profileImage" name="profileImage">
+            <?php if (!empty($user['profileImage'])) : ?>
+                <img src="uploads/<?= $user['profileImage']; ?>" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 50%;">
+            <?php endif; ?>
+
             <button type="submit">Update User</button>
         </form>
     </div>
 </body>
 
 </html>
+100px

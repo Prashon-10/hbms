@@ -1,109 +1,101 @@
 <?php
-include './config/connection.php';
+session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['signUp'])) {
-        $firstName = $_POST['fName'];
-        $lastName = $_POST['lName'];
-        $email = $_POST['email'];
+if ($_SESSION['role'] != 'admin') {
+    header("Location: login.php");
+    exit();
+}
+
+include './config/connection.php';
+include_once './includes/header.php';
+
+function sanitize($conn, $input)
+{
+    return mysqli_real_escape_string($conn, htmlspecialchars(strip_tags(trim($input))));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['add_user'])) {
+        $first_name = sanitize($conn, $_POST['first_name']);
+        $last_name = sanitize($conn, $_POST['last_name']);
+        $email = sanitize($conn, $_POST['email']);
+        $phone = sanitize($conn, $_POST['phone']);
+        $dob = sanitize($conn, $_POST['dob']);
+        $gender = sanitize($conn, $_POST['gender']);
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-        $insert_query = "INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)";
-        $stmt = $conn->prepare($insert_query);
-        $stmt->bind_param("ssss", $firstName, $lastName, $email, $password);
+        // Handle profile image upload
+        $profile_image = $_FILES['profile_image']['name'];
+        $target_dir = "uploads/";
+        $target_file = $target_dir . basename($profile_image);
+        move_uploaded_file($_FILES['profile_image']['tmp_name'], $target_file);
 
-        if ($stmt->execute()) {
-            echo "Registration successful!";
+        $insert_query = "INSERT INTO users (first_name, last_name, email, phone, dob, gender, password, profile_image) 
+                         VALUES ('$first_name', '$last_name', '$email', '$phone', '$dob', '$gender', '$password', '$profile_image')";
+
+        if ($conn->query($insert_query)) {
+            $_SESSION['message'] = "User added successfully!";
+            header('Location: dashboard.php');
+            exit();
         } else {
-            echo "Error: " . $stmt->error;
+            $_SESSION['error'] = "Error adding user: " . $conn->error;
         }
-
-        $stmt->close();
     }
 }
-?>
 
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register & Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="./style/register.css">
+    <title>Register User</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <div class="container" id="signup" style="display:none;">
-        <h1 class="form-title">Register</h1>
-        <form method="post" action="">
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" name="fName" id="fName" placeholder="First Name" required>
-                <label for="fname">First Name</label>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" name="lName" id="lName" placeholder="Last Name" required>
-                <label for="lName">Last Name</label>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" name="email" id="email" placeholder="Email" required>
-                <label for="email">Email</label>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" name="password" id="password" placeholder="Password" required>
-                <label for="password">Password</label>
-            </div>
-            <input type="submit" class="btn" value="Sign Up" name="signUp">
-        </form>
-        <p class="or">
-            ----------or--------
-        </p>
-        <div class="icons">
-            <i class="fab fa-google"></i>
-            <i class="fab fa-facebook"></i>
-        </div>
-        <div class="links">
-            <p>Already Have Account ?</p>
-            <button id="signInButton">Sign In</button>
-        </div>
-    </div>
+    <div class="container">
+        <h2>Register User</h2>
+        <?php if (isset($_SESSION['message'])): ?>
+            <p class="message"><?= $_SESSION['message']; ?></p>
+            <?php unset($_SESSION['message']); ?>
+        <?php endif; ?>
 
-    <div class="container" id="signIn">
-        <h1 class="form-title">Sign In</h1>
-        <form method="post" action="login.php">
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" name="email" id="email" placeholder="Email" required>
-                <label for="email">Email</label>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" name="password" id="password" placeholder="Password" required>
-                <label for="password">Password</label>
-            </div>
-            <p class="recover">
-                <a href="#">Recover Password</a>
-            </p>
-            <input type="submit" class="btn" value="Sign In" name="signIn">
+        <?php if (isset($_SESSION['error'])): ?>
+            <p class="error"><?= $_SESSION['error']; ?></p>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+
+        <form action="" method="POST" enctype="multipart/form-data">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required>
+            
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" required>
+            
+            <label for="dob"></label>
+            <input type="date" id="dob" name="dob" required>
+            
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <label for="profile_image">Profile Image:</label>
+            <input type="file" id="profile_image" name="profile_image" required>
+            
+            <button type="submit" name="add_user">Register</button>
         </form>
-        <p class="or">
-            ----------or--------
-        </p>
-        <div class="icons">
-            <i class="fab fa-google"></i>
-            <i class="fab fa-facebook"></i>
-        </div>
-        <div class="links">
-            <p>Don't have account yet?</p>
-            <button id="signUpButton">Sign Up</button>
-        </div>
     </div>
-    <script src="./js/login-reg.js"></script>
 </body>
-
 </html>

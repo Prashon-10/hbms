@@ -14,17 +14,19 @@
         </div>
 
         <div class="footer-links">
-            <ul>
+            <>
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Rooms</a></li>
                 <li><a href="#">Services</a></li>
                 <li><a href="#">Contact</a></li>
-            </ul>
+                </ul>
+
+
         </div>
 
-    <div class="footer-bottom">
-        <p>&copy; 2024 Hotel Dynasty. All rights reserved.</p>
-    </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Hotel Dynasty. All rights reserved.</p>
+        </div>
 </footer>
 
 </body>

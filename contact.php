@@ -1,6 +1,6 @@
 <?php
 include ("./config/connection.php");
-// include header
+include_once './includes/header.php';
 ?>
 
 <!DOCTYPE html>
@@ -12,28 +12,13 @@ include ("./config/connection.php");
     <title>Contact Us - Hotel Dynasty</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="./style/contact.css">
-    <!-- Add Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
-    <script>
-        function initMap() {
-            var mapOptions = {
-                center: { lat: 27.7172, lng: 85.3240 },
-                zoom: 14
-            };
-            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-            var marker = new google.maps.Marker({
-                position: { lat: 27.7172, lng: 85.3240 },
-                map: map,
-                title: "Hotel Dynasty"
-            });
-        }
-    </script>
+
 </head>
 
 <body>
 
     <div class="container">
-        
+
         <h1>Contact Us - Hotel Dynasty</h1>
         <p>Welcome to Hotel Dynasty. Feel free to contact us using the form below.</p>
 
@@ -49,9 +34,6 @@ include ("./config/connection.php");
 
             <button type="submit">Submit</button>
         </form>
-
-        <!-- Map Section -->
-        <div id="map" style="height: 400px; margin-top: 20px;"></div>
 
         <!-- Hotel Details -->
         <div>

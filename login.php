@@ -1,62 +1,71 @@
 <?php
 session_start();
-
 include("./config/connection.php");
+
+$message = '';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['signIn'])) {
         $email = $_POST['email'];
         $password = $_POST['password'];
-
-        // Prepare the query to fetch user by email
         $query = "SELECT * FROM users WHERE email=?";
-        
-        // Prepare statement
         $stmt = $conn->prepare($query);
-        
         if ($stmt === false) {
             die('MySQL prepare error: ' . htmlspecialchars($conn->error));
         }
-        
-        // Bind parameters
         $stmt->bind_param("s", $email);
-        
-        // Execute query
         $stmt->execute();
-        
-        // Get result
         $result = $stmt->get_result();
-        
-        // Check if user exists and verify password
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
             if (password_verify($password, $user['password'])) {
-                // Password is correct, set session variables
                 $_SESSION['email'] = $email;
-                
-                // Debug: Output session variables
-                echo '<pre>';
-                var_dump($_SESSION);
-                echo '</pre>';
-                
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['profileImage'] = $user['profileImage'];
                 header("Location: index.php");
                 exit();
             } else {
-                // Incorrect password
                 $message = "Invalid email or password.";
             }
         } else {
-            // User not found
             $message = "Invalid email or password.";
         }
-        
-        // Close statement
+        $stmt->close();
+    } elseif (isset($_POST['signUp'])) {
+        $firstName = $_POST['firstName'];
+        $lastName = $_POST['lastName'];
+        $email = $_POST['email'];
+        $phone = $_POST['phone'];
+        $dob = $_POST['dob'];
+        $gender = $_POST['gender'];
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+        // Handle profile image upload
+        $profileImage = $_FILES['profileImage']['name'];
+        $target_dir = "uploads/";
+        $target_file = $target_dir . basename($profileImage);
+        move_uploaded_file($_FILES['profileImage']['tmp_name'], $target_file);
+
+        $query = "INSERT INTO users (firstName, lastName, email, phone, dob, gender, password, profileImage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($query);
+        if ($stmt === false) {
+            die('MySQL prepare error: ' . htmlspecialchars($conn->error));
+        }
+        $stmt->bind_param("ssssssss", $firstName, $lastName, $email, $phone, $dob, $gender, $password, $profileImage);
+        if ($stmt->execute()) {
+            $message = "Registration successful!";
+        } else {
+            $message = "Error: " . $stmt->error;
+        }
         $stmt->close();
     }
 }
+$conn->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,19 +73,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="./style/register.css">
 </head>
+
 <body>
-    <div class="container" id="signup" style="display:none;">
+    <div class="container" id="signup" style="display: none;">
         <h1 class="form-title">Register</h1>
-        <form method="post" action="register.php">
+        <?php if (!empty($message)) {
+            echo '<p class="message">' . $message . '</p>';
+        } ?>
+        <form method="post" action="" enctype="multipart/form-data">
             <div class="input-group">
                 <i class="fas fa-user"></i>
-                <input type="text" name="fName" id="fName" placeholder="First Name" required>
-                <label for="fname">First Name</label>
+                <input type="text" name="firstName" id="firstName" placeholder="First Name" required>
+                <label for="firstName">First Name</label>
             </div>
             <div class="input-group">
                 <i class="fas fa-user"></i>
-                <input type="text" name="lName" id="lName" placeholder="Last Name" required>
-                <label for="lName">Last Name</label>
+                <input type="text" name="lastName" id="lastName" placeholder="Last Name" required>
+                <label for="lastName">Last Name</label>
             </div>
             <div class="input-group">
                 <i class="fas fa-envelope"></i>
@@ -84,15 +97,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="email">Email</label>
             </div>
             <div class="input-group">
+                <i class="fas fa-phone"></i>
+                <input type="text" name="phone" id="phone" placeholder="Phone" required>
+                <label for="phone">Phone</label>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-calendar"></i>
+                <input type="date" name="dob" id="dob" required>
+                <label for="dob"></label>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-venus-mars"></i>
+                <select name="gender" id="gender" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+                <label for="gender"></label>
+            </div>
+            <div class="input-group">
                 <i class="fas fa-lock"></i>
                 <input type="password" name="password" id="password" placeholder="Password" required>
                 <label for="password">Password</label>
             </div>
+            <div class="input-group">
+                <i class="fas fa-image"></i>
+                <input type="file" name="profileImage" id="profileImage" required>
+                <label for="profileImage"></label>
+            </div>
             <input type="submit" class="btn" value="Sign Up" name="signUp">
         </form>
-        <p class="or">
-            ----------or--------
-        </p>
+        <p class="or">----------or----------</p>
         <div class="icons">
             <i class="fab fa-google"></i>
             <i class="fab fa-facebook"></i>
@@ -119,14 +154,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="password" name="password" id="password" placeholder="Password" required>
                 <label for="password">Password</label>
             </div>
-            <p class="recover">
-                <a href="#">Recover Password</a>
-            </p>
+            <p class="recover"><a href="#">Recover Password</a></p>
             <input type="submit" class="btn" value="Sign In" name="signIn">
         </form>
-        <p class="or">
-            ----------or--------
-        </p>
+        <p class="or">----------or----------</p>
         <div class="icons">
             <i class="fab fa-google"></i>
             <i class="fab fa-facebook"></i>
@@ -139,4 +170,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <script src="./js/login-reg.js"></script>
 </body>
+
 </html>

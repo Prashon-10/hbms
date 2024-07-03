@@ -1,4 +1,4 @@
-/* styles.css */
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -7,7 +7,7 @@ body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 50px auto;
   padding: 20px;
   background-color: #fff;

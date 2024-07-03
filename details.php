@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ("config/connection.php");
+include("config/connection.php");
 
 $message = '';
 $room_type = $_GET['type'] ?? '';
@@ -12,6 +12,13 @@ $static_room_types = [
     'premium' => 200,
     'deluxe' => 300,
     'executive' => 400
+];
+
+// Static services with prices
+$services = [
+    'food' => 50,
+    'spa' => 100,
+    'wifi' => 20
 ];
 
 // Fetch available room types from the database
@@ -26,23 +33,35 @@ while ($row = $result->fetch_assoc()) {
 // Merge static and dynamic room types
 $all_room_types = array_merge($static_room_types, $room_types);
 
-// Function to sanitize user inputs
-function sanitize($conn, $input)
-{
-    return mysqli_real_escape_string($conn, htmlspecialchars(strip_tags(trim($input))));
+// Fetch user details based on session email
+$user_email = $_SESSION['email'] ?? '';
+if (!empty($user_email)) {
+    $user_query = "SELECT firstName, lastName, phone FROM users WHERE email = '$user_email'";
+    $user_result = $conn->query($user_query);
+    $user_data = $user_result->fetch_assoc();
+    $first_name = $user_data['firstName'] ?? '';
+    $last_name = $user_data['lastName'] ?? '';
+    $phone_number = $user_data['phone'] ?? '';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize and validate inputs
-    $first_name = sanitize($conn, $_POST['first-name']);
-    $last_name = sanitize($conn, $_POST['last-name']);
-    $email = sanitize($conn, $_POST['email']);
-    $phone_number = sanitize($conn, $_POST['phone-number']);
-    $address = sanitize($conn, $_POST['address']);
+    // Validate and retrieve inputs
+    $first_name = htmlspecialchars(trim($_POST['first-name']));
+    $last_name = htmlspecialchars(trim($_POST['last-name']));
+    $email = htmlspecialchars(trim($_POST['email']));
+    $phone_number = htmlspecialchars(trim($_POST['phone-number']));
+    $address = htmlspecialchars(trim($_POST['address']));
     $check_in_date = $_POST['check-in-date'];
     $check_out_date = $_POST['check-out-date'];
-    $room_type = sanitize($conn, $_POST['room-type']);
-    $price = $all_room_types[$room_type] ?? ''; // Get price based on selected room type
+    $room_type = $_POST['room-type'];
+
+    // Calculate total price including room price and selected services
+    $room_price = $all_room_types[$room_type] ?? 0;
+    $selected_services = $_POST['services'] ?? [];
+    $service_price = array_reduce($selected_services, function ($acc, $service) use ($services) {
+        return $acc + ($services[$service] ?? 0);
+    }, 0);
+    $total_price = $room_price + $service_price;
 
     // Validate dates
     $today = date('Y-m-d');
@@ -53,11 +72,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Insert into database
         $insert_query = "INSERT INTO reservations (first_name, last_name, email, phone_number, address, check_in_date, check_out_date, room_type, price)
-                         VALUES ('$first_name', '$last_name', '$email', '$phone_number', '$address', '$check_in_date', '$check_out_date', '$room_type', '$price')";
+                         VALUES ('$first_name', '$last_name', '$email', '$phone_number', '$address', '$check_in_date', '$check_out_date', '$room_type', '$total_price')";
 
         if ($conn->query($insert_query)) {
             $_SESSION['message'] = "Booking successful!";
-            header('Location: details.php?type=' . urlencode($room_type) . '&price=' . urlencode($price));
+            header('Location: details.php?type=' . urlencode($room_type) . '&price=' . urlencode($total_price));
             exit();
         } else {
             $message = "Error: " . $conn->error;
@@ -93,26 +112,33 @@ $conn->close();
             background-color: #d4edda;
             color: #155724;
         }
+
+        .total-price {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
     </style>
     <script>
-        function validateDates() {
-            var checkInDate = document.getElementById('check-in-date').value;
-            var checkOutDate = document.getElementById('check-out-date').value;
-
-            var today = new Date().toISOString().slice(0, 10);
-
-            if (checkInDate < today) {
-                alert('Check-in date must be today or later.');
-                return false;
+        function calculateTotalPrice() {
+            var roomType = document.getElementById('room-type').value;
+            var roomPrice = parseFloat(document.getElementById('room-type').options[document.getElementById('room-type').selectedIndex].getAttribute('data-price'));
+            var servicesTotal = 0;
+            var checkboxes = document.getElementsByName('services[]');
+            
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    var servicePrice = parseFloat(checkboxes[i].getAttribute('data-price'));
+                    servicesTotal += servicePrice;
+                }
             }
 
-            if (checkOutDate <= checkInDate) {
-                alert('Check-out date must be after check-in date.');
-                return false;
-            }
-
-            return true;
+            var totalPrice = roomPrice + servicesTotal;
+            document.getElementById('total-price').innerText = 'Total Price: $' + totalPrice.toFixed(2);
         }
+        
+        window.onload = function() {
+            calculateTotalPrice();
+        };
     </script>
 </head>
 
@@ -120,30 +146,28 @@ $conn->close();
     <?php include 'includes/header.php'; ?>
 
     <div class="hotel-details">
-        <div class="gallery">
-            <img src="./images/hotel1.jpg" alt="Hotel Image 1" onclick="openModal('./images/hotel1.jpg')">
-            <img src="./images/hotel2.jpg" alt="Hotel Image 2" onclick="openModal('./images/hotel2.jpg')">
-            <img src="./images/hotel3.jpg" alt="Hotel Image 3" onclick="openModal('./images/hotel3.jpg')">
-            <!-- <img src="./images/hotel4.jpg" alt="Hotel Image 4" onclick="openModal('./images/hotel4.jpg')"> -->
-            <!-- <img src="./images/hotel5.jpg" alt="Hotel Image 5" onclick="openModal('./images/hotel5.jpg')"> -->
-        </div>
-
+        
         <div class="room-types">
             <h3>Room Types</h3>
             <label for="room-type">Select Room Type:</label>
             <form method="post" action="details.php">
-                <select id="room-type" name="room-type" required>
+                <select id="room-type" name="room-type" onchange="calculateTotalPrice()" required>
                     <?php foreach ($all_room_types as $type => $pricePerNight): ?>
-                        <option value="<?= htmlspecialchars($type) ?>" <?= $room_type == $type ? 'selected' : '' ?>>
+                        <option value="<?= htmlspecialchars($type) ?>" data-price="<?= $pricePerNight ?>" <?= $room_type == $type ? 'selected' : '' ?>>
                             <?= ucfirst($type) ?> Room - $<?= number_format($pricePerNight, 2) ?>/night
                         </option>
                     <?php endforeach; ?>
                 </select>
         </div>
 
-        <!-- <div class="pricing" id="pricing">
-            <p>Starting from $<?= htmlspecialchars($price) ?> per night</p>
-        </div> -->
+        <div class="services">
+            <h3>Additional Services</h3>
+            <label>Select Services (Optional):</label><br>
+            <?php foreach ($services as $service => $price): ?>
+                <input type="checkbox" id="<?= $service ?>" name="services[]" value="<?= $service ?>" data-price="<?= $price ?>" onchange="calculateTotalPrice()" style="position: relative; top: 39px;">
+                <label for="<?= $service ?>"><?= ucfirst($service) ?> - $<?= number_format($price, 2) ?></label><br>
+            <?php endforeach; ?>
+        </div>
 
         <div class="booking-form">
             <h3>Book Your Stay</h3>
@@ -157,19 +181,19 @@ $conn->close();
             <form method="post" action="details.php" onsubmit="return validateDates()">
                 <label for="first-name">First Name:</label>
                 <input type="text" id="first-name" name="first-name"
-                    value="<?= htmlspecialchars($_POST['first-name'] ?? '') ?>" required>
+                    value="<?= htmlspecialchars($first_name ?? '') ?>" required>
 
                 <label for="last-name">Last Name:</label>
                 <input type="text" id="last-name" name="last-name"
-                    value="<?= htmlspecialchars($_POST['last-name'] ?? '') ?>" required>
+                    value="<?= htmlspecialchars($last_name ?? '') ?>" required>
 
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                    <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="<?= htmlspecialchars($user_email) ?>"
                     required>
 
                 <label for="phone-number">Phone Number:</label>
                 <input type="tel" id="phone-number" name="phone-number"
-                    value="<?= htmlspecialchars($_POST['phone-number'] ?? '') ?>" required>
+                    value="<?= htmlspecialchars($phone_number ?? '') ?>" required>
 
                 <label for="address">Address:</label>
                 <input type="text" id="address" name="address" value="<?= htmlspecialchars($_POST['address'] ?? '') ?>"
@@ -183,29 +207,12 @@ $conn->close();
                 <input type="date" id="check-out-date" name="check-out-date"
                     value="<?= htmlspecialchars($_POST['check-out-date'] ?? '') ?>" required>
 
+                <div id="total-price" class="total-price"></div>
+
                 <input type="submit" value="Submit">
             </form>
         </div>
     </div>
-
-    <div id="imageModal" class="modal">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <img class="modal-content" id="modalImage">
-    </div>
-
-    <script>
-        function openModal(src) {
-            var modal = document.getElementById("imageModal");
-            var modalImg = document.getElementById("modalImage");
-            modal.style.display = "block";
-            modalImg.src = src;
-        }
-
-        function closeModal() {
-            var modal = document.getElementById("imageModal");
-            modal.style.display = "none";
-        }
-    </script>
 
     <?php include 'includes/footer.php'; ?>
 </body>
