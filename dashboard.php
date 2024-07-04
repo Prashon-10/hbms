@@ -121,7 +121,7 @@ $conn->close();
         }
 
         .container {
-            max-width: 1440px;
+            max-width: 1600px;
             margin: 20px auto;
             background-color: #fff;
             padding: 20px;
@@ -144,6 +144,7 @@ $conn->close();
         table td {
             border: 1px solid #ddd;
             padding: 8px;
+            /* width: 0px; */
             text-align: left;
         }
 
@@ -324,9 +325,10 @@ $conn->close();
                     <td><?= $user['phone']; ?></td>
                     <td><?= $user['dob']; ?></td>
                     <td><?= $user['gender']; ?></td>
-                    <td>
+                    <!-- <td style="width:0px;"></td> -->
+                    <td style="width:0px">
                         <?php if (!empty($user['profileImage'])) : ?>
-                            <img src="uploads/<?= $user['profileImage']; ?>" alt="Profile Image" style="width: 50px; height: 50px; border-radius: 50%;">
+                            <img src="uploads/<?= $user['profileImage']; ?>" alt="Profile Image" style="width: 155px";>
                         <?php else : ?>
                             No Image
                         <?php endif; ?>

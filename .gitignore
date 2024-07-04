@@ -1,0 +1,5 @@
+# ignore vendor folder and composer.json and composer.lock
+
+/vendor
+/composer.json
+/composer.lock

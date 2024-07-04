@@ -35,10 +35,12 @@ $all_room_types = array_merge($static_room_types, $room_types);
 
 // Fetch user details based on session email
 $user_email = $_SESSION['email'] ?? '';
+$user_id = null;
 if (!empty($user_email)) {
-    $user_query = "SELECT firstName, lastName, phone FROM users WHERE email = '$user_email'";
+    $user_query = "SELECT id, firstName, lastName, phone FROM users WHERE email = '$user_email'";
     $user_result = $conn->query($user_query);
     $user_data = $user_result->fetch_assoc();
+    $user_id = $user_data['id'] ?? null;
     $first_name = $user_data['firstName'] ?? '';
     $last_name = $user_data['lastName'] ?? '';
     $phone_number = $user_data['phone'] ?? '';
@@ -71,8 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = "Check-out date must be after check-in date.";
     } else {
         // Insert into database
-        $insert_query = "INSERT INTO reservations (first_name, last_name, email, phone_number, address, check_in_date, check_out_date, room_type, price)
-                         VALUES ('$first_name', '$last_name', '$email', '$phone_number', '$address', '$check_in_date', '$check_out_date', '$room_type', '$total_price')";
+        $insert_query = "INSERT INTO reservations (user_id, first_name, last_name, email, phone_number, address, check_in_date, check_out_date, room_type, price)
+                         VALUES ('$user_id', '$first_name', '$last_name', '$email', '$phone_number', '$address', '$check_in_date', '$check_out_date', '$room_type', '$total_price')";
 
         if ($conn->query($insert_query)) {
             $_SESSION['message'] = "Booking successful!";
@@ -180,41 +182,32 @@ $conn->close();
             } ?>
             <form method="post" action="details.php" onsubmit="return validateDates()">
                 <label for="first-name">First Name:</label>
-                <input type="text" id="first-name" name="first-name"
-                    value="<?= htmlspecialchars($first_name ?? '') ?>" required>
+                <input type="text" id="first-name" name="first-name" value="<?= htmlspecialchars($first_name) ?>" required><br>
 
                 <label for="last-name">Last Name:</label>
-                <input type="text" id="last-name" name="last-name"
-                    value="<?= htmlspecialchars($last_name ?? '') ?>" required>
+                <input type="text" id="last-name" name="last-name" value="<?= htmlspecialchars($last_name) ?>" required><br>
 
-                    <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="<?= htmlspecialchars($user_email) ?>"
-                    required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="<?= htmlspecialchars($user_email) ?>" required><br>
 
                 <label for="phone-number">Phone Number:</label>
-                <input type="tel" id="phone-number" name="phone-number"
-                    value="<?= htmlspecialchars($phone_number ?? '') ?>" required>
+                <input type="text" id="phone-number" name="phone-number" value="<?= htmlspecialchars($phone_number) ?>" required><br>
 
                 <label for="address">Address:</label>
-                <input type="text" id="address" name="address" value="<?= htmlspecialchars($_POST['address'] ?? '') ?>"
-                    required>
+                <input type="text" id="address" name="address" required><br>
 
                 <label for="check-in-date">Check-in Date:</label>
-                <input type="date" id="check-in-date" name="check-in-date"
-                    value="<?= htmlspecialchars($_POST['check-in-date'] ?? '') ?>" required>
+                <input type="date" id="check-in-date" name="check-in-date" required><br>
 
                 <label for="check-out-date">Check-out Date:</label>
-                <input type="date" id="check-out-date" name="check-out-date"
-                    value="<?= htmlspecialchars($_POST['check-out-date'] ?? '') ?>" required>
+                <input type="date" id="check-out-date" name="check-out-date" required><br>
 
-                <div id="total-price" class="total-price"></div>
+                <div class="total-price" id="total-price">Total Price: $0.00</div>
 
-                <input type="submit" value="Submit">
+                <button type="submit">Book Now</button>
             </form>
         </div>
     </div>
-
-    <?php include 'includes/footer.php'; ?>
 </body>
 
 </html>

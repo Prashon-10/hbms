@@ -1,6 +1,7 @@
 <?php
 session_start();
 include './config/connection.php';
+include_once './includes/header.php';
 
 // Check if admin is logged in
 // if (!isset($_SESSION['admin'])) {
@@ -47,7 +48,7 @@ $conn->close();
         }
 
         .container {
-            max-width: 600px;
+            max-width: 1000px;
             margin: 50px auto;
             background-color: #fff;
             padding: 20px;
