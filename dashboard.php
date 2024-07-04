@@ -7,13 +7,12 @@ if ($_SESSION['role'] != 'admin') {
 include './config/connection.php';
 include_once './includes/adminheader.php';
 
-// Function to sanitize user inputs
+
 function sanitize($conn, $input)
 {
     return mysqli_real_escape_string($conn, htmlspecialchars(strip_tags(trim($input))));
 }
 
-// Handle various operations
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['delete_room'])) {
         $room_id = sanitize($conn, $_POST['room_id']);
@@ -88,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch data for display
 $rooms_query = "SELECT * FROM rooms";
 $users_query = "SELECT * FROM users";
 $bookings_query = "SELECT * FROM reservations";
@@ -97,7 +95,6 @@ $rooms_result = $conn->query($rooms_query);
 $users_result = $conn->query($users_query);
 $bookings_result = $conn->query($bookings_query);
 
-// Fetch total bookings and total amount collected
 $total_bookings_query = "SELECT COUNT(*) AS total_bookings, SUM(price) AS total_amount FROM reservations";
 $total_result = $conn->query($total_bookings_query);
 $total_data = $total_result->fetch_assoc();

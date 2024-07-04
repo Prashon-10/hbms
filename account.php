@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id'])) {
 include './config/connection.php';
 include_once './includes/header.php';
 
-// Function to sanitize user inputs
 function sanitize($conn, $input)
 {
     return mysqli_real_escape_string($conn, htmlspecialchars(strip_tags(trim($input))));

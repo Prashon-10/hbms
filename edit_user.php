@@ -170,14 +170,6 @@ $conn->close();
             <label for="gender">Gender:</label>
             <input type="text" id="gender" name="gender" value="<?= isset($user['gender']) ? $user['gender'] : ''; ?>" required>
 
-            <label for="profileImage">Profile Image:</label>
-            <input type="file" id="profileImage" name="profileImage" onchange="previewProfileImage(event)">
-            <?php if (!empty($user['profileImage'])) : ?>
-                <img id="profileImagePreview" src="uploads/<?= $user['profileImage']; ?>" alt="Profile Image" class="profile-image-preview">
-            <?php else : ?>
-                <img id="profileImagePreview" src="uploads/default-profile.jpg" alt="Profile Image" class="profile-image-preview">
-            <?php endif; ?>
-
             <button type="submit">Update User</button>
         </form>
     </div>
