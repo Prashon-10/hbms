@@ -1,11 +1,11 @@
 <?php
 session_start();
 if ($_SESSION['role'] != 'admin') {
-    header("Location: login.php");
+    header("Location: admin_login.php");
     exit();
 }
 include './config/connection.php';
-include_once './includes/header.php';
+include_once './includes/adminheader.php';
 
 // Function to sanitize user inputs
 function sanitize($conn, $input)
