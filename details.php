@@ -18,6 +18,9 @@ $static_room_types = [
 $services = [
     'food' => 50,
     'spa' => 100,
+    'parking' => 150,
+    'laundry' => 200,
+    'gym' => 120,
     'wifi' => 20
 ];
 

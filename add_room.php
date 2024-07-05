@@ -19,8 +19,11 @@ function sanitize($conn, $input)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $type = sanitize($conn, $_POST['type']);
     $price = sanitize($conn, $_POST['price']);
+    $number = sanitize($conn, $_POST['number']);
 
-    $insert_query = "INSERT INTO rooms (type, price) VALUES ('$type', '$price')";
+    $insert_query = "INSERT INTO rooms (room_number, type, price) VALUES ($number, '$type', '$price')";
+    // echo $insert_query;
+    // die;
     if ($conn->query($insert_query)) {
         $_SESSION['message'] = "Room added successfully!";
         header('Location: dashboard.php');
@@ -126,7 +129,11 @@ $conn->close();
 
         <form action="" method="POST">
             <div class="form-group">
-                <label for="type">Room Type:</label>
+                <label for="number">Room Number:</label>
+                <input type="number" id="number" name="number" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type:</label>
                 <input type="text" id="type" name="type" required>
             </div>
             <div class="form-group">

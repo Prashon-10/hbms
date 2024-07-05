@@ -168,19 +168,24 @@ $conn->close();
         }
         .action-buttons form {
             display: inline;
+            /* width: 153px; */
         }
         .action-buttons button,
         .action-buttons a {
+            width: 100px;
             padding: 5px 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             text-decoration: none;
             color: white;
-            height: 40px;
+            font-size: 15px;
+            height: 50px;
         }
         .action-buttons .edit-btn {
             background-color: #5cb85c;
+            text-align: center;
+            line-height: 42px;
         }
         .action-buttons .delete-btn {
             background-color: #d9534f;
@@ -319,6 +324,7 @@ $conn->close();
             <tr>
                 <th>ID</th>
                 <th>Room Type</th>
+                <!-- <th>Room Number</th> -->
                 <th>Check-in Date</th>
                 <th>Check-out Date</th>
                 <th>First Name</th>
@@ -336,6 +342,7 @@ $conn->close();
                 <tr>
                     <td><?= $booking_counter++; ?></td>
                     <td><?= $booking['room_type']; ?></td>
+                    <!-- <td><?= $rooms['room_number']; ?></td> -->
                     <td><?= $booking['check_in_date']; ?></td>
                     <td><?= $booking['check_out_date']; ?></td>
                     <td><?= $booking['first_name']; ?></td>

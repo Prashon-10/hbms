@@ -30,6 +30,7 @@ if ($room_id > 0) {
 // Handle form submission for updating room
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $room_id = sanitize($conn, $_POST['room_id']);
+    $room_number = sanitize($conn, $_POST['room_number']);
     $type = sanitize($conn, $_POST['type']);
     $price = sanitize($conn, $_POST['price']);
 
@@ -128,6 +129,8 @@ $conn->close();
 
         <form action="" method="POST">
             <input type="hidden" name="room_id" value="<?= $room['id']; ?>">
+            <label for="room_number">Room Number:</label>
+            <input type="text" id="room_number" name="room_number" value="<?= $room['room_number']; ?>" required>
             <label for="type">Room Type:</label>
             <input type="text" id="type" name="type" value="<?= $room['type']; ?>" required>
 

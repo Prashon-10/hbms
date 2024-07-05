@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_booking'])) {
     } else {
         $_SESSION['error'] = "Error cancelling booking: " . $conn->error;
     }
-    header('Location: my_bookings.php');
+    header('Location: my_booking.php');
     exit();
 }
 
