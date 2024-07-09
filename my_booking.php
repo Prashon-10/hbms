@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 include './config/connection.php';
-include_once'./includes/header.php';
+include_once './includes/header.php';
 
 // Function to sanitize user inputs
 function sanitize($conn, $input)
@@ -14,13 +14,23 @@ function sanitize($conn, $input)
 }
 
 // Handle booking cancellation
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_booking'])) {
-    $booking_id = sanitize($conn, $_POST['booking_id']);
-    $cancel_query = "UPDATE reservations SET cancellation_status='cancelled' WHERE id = $booking_id";
-    if ($conn->query($cancel_query)) {
-        $_SESSION['message'] = "Booking cancelled successfully!";
-    } else {
-        $_SESSION['error'] = "Error cancelling booking: " . $conn->error;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['cancel_booking'])) {
+        $booking_id = sanitize($conn, $_POST['booking_id']);
+        $cancel_query = "UPDATE reservations SET cancellation_status='cancelled' WHERE id = $booking_id";
+        if ($conn->query($cancel_query)) {
+            $_SESSION['message'] = "Booking cancelled successfully!";
+        } else {
+            $_SESSION['error'] = "Error cancelling booking: " . $conn->error;
+        }
+    } elseif (isset($_POST['delete_booking'])) {
+        $booking_id = sanitize($conn, $_POST['booking_id']);
+        $delete_query = "DELETE FROM reservations WHERE id = $booking_id";
+        if ($conn->query($delete_query)) {
+            $_SESSION['message'] = "Booking deleted successfully!";
+        } else {
+            $_SESSION['error'] = "Error deleting booking: " . $conn->error;
+        }
     }
     header('Location: my_booking.php');
     exit();
@@ -145,14 +155,19 @@ $conn->close();
                     <td><?= $booking['payment_status']; ?></td>
                     <td><?= $booking['cancellation_status']; ?></td>
                     <td>
-                        <?php if ($booking['cancellation_status'] == 'not_cancelled') : ?>
-                            <div class="action-buttons">
+                        <div class="action-buttons">
+                            <?php if ($booking['cancellation_status'] == 'not_cancelled' && !($booking['payment_status'] == 'paid' && $booking['status'] == 'accepted')) : ?>
                                 <form action="" method="POST">
                                     <input type="hidden" name="booking_id" value="<?= $booking['id']; ?>">
                                     <button type="submit" name="cancel_booking">Cancel Booking</button>
                                 </form>
-                            </div>
-                        <?php endif; ?>
+                            <?php elseif ($booking['cancellation_status'] == 'cancelled') : ?>
+                                <form action="" method="POST">
+                                    <input type="hidden" name="booking_id" value="<?= $booking['id']; ?>">
+                                    <button type="submit" name="delete_booking">Delete Booking</button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
                     </td>
                 </tr>
             <?php endwhile; ?>

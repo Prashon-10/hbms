@@ -104,6 +104,7 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -116,6 +117,7 @@ $conn->close();
             margin: 0;
             padding: 0;
         }
+
         .container {
             max-width: 1600px;
             margin: 20px auto;
@@ -124,28 +126,35 @@ $conn->close();
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         h2 {
             text-align: center;
             margin-bottom: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-        table th, table td {
+
+        table th,
+        table td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         table th {
             background-color: #f2f2f2;
         }
+
         #summary {
             font-size: 27px;
             font-weight: bold;
             color: purple;
         }
+
         .message {
             background-color: #dff0d8;
             color: #3c763d;
@@ -154,6 +163,7 @@ $conn->close();
             margin-bottom: 10px;
             border-radius: 4px;
         }
+
         .error {
             background-color: #f2dede;
             color: #a94442;
@@ -162,14 +172,17 @@ $conn->close();
             margin-bottom: 10px;
             border-radius: 4px;
         }
+
         .action-buttons {
             display: flex;
             gap: 10px;
         }
+
         .action-buttons form {
             display: inline;
             /* width: 153px; */
         }
+
         .action-buttons button,
         .action-buttons a {
             width: 100px;
@@ -182,52 +195,67 @@ $conn->close();
             font-size: 15px;
             height: 50px;
         }
+
         .action-buttons .edit-btn {
             background-color: #5cb85c;
             text-align: center;
             line-height: 42px;
         }
+
         .action-buttons .delete-btn {
             background-color: #d9534f;
         }
+
         .action-buttons .add-btn {
             background-color: #337ab7;
         }
+
         .action-buttons .accept-btn {
             background-color: #5cb85c;
         }
+
         .action-buttons .decline-btn {
             background-color: #d9534f;
         }
+
         .action-buttons .paid-btn {
             background-color: #f0ad4e;
         }
+
         .action-buttons .cancel-btn {
             background-color: #d9534f;
         }
+
         .action-buttons .edit-btn:hover {
             background-color: #4cae4c;
         }
+
         .action-buttons .delete-btn:hover {
             background-color: #c9302c;
         }
+
         .action-buttons .add-btn:hover {
             background-color: #286090;
         }
+
         .action-buttons .accept-btn:hover {
             background-color: #4cae4c;
         }
+
         .action-buttons .decline-btn:hover {
             background-color: #c9302c;
         }
+
         .action-buttons .paid-btn:hover {
             background-color: #ec971f;
         }
+
         .action-buttons .cancel-btn:hover {
             background-color: #c9302c;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>Admin Dashboard</h2>
@@ -301,7 +329,7 @@ $conn->close();
                     <td><?= $user['gender']; ?></td>
                     <td style="width:0px">
                         <?php if (!empty($user['profileImage'])) : ?>
-                            <img src="uploads/<?= $user['profileImage']; ?>" alt="Profile Image" style="width: 155px";>
+                            <img src="uploads/<?= $user['profileImage']; ?>" alt="Profile Image" style="width: 155px" ;>
                         <?php else : ?>
                             No Image
                         <?php endif; ?>
@@ -369,6 +397,7 @@ $conn->close();
                                 <?php endif; ?>
                                 <?php if ($booking['cancellation_status'] == 'not_cancelled') : ?>
                                     <button type="submit" name="cancel_booking" class="cancel-btn">Cancel Booking</button>
+                                    <button type="submit" name="delete_booking">Delete Booking</button>
                                 <?php endif; ?>
                             </form>
                         </div>
@@ -378,4 +407,5 @@ $conn->close();
         </table>
     </div>
 </body>
+
 </html>

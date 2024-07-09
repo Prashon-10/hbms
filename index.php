@@ -38,8 +38,8 @@ $conn->close();
         <p id="mainimagetext"><span> Escape to Hotel Dynasty – where luxury meets tranquility, ensuring an
                 unparalleled
                 experience with every <br> stay.</span>
-            <a href="#" id="getstarted">Get Started</a>
-            <a href="#" id="learnmore">Learn More</a>
+            <a href="details.php" id="getstarted">Get Started</a>
+            <a href="#services" id="learnmore">Learn More</a>
         </p>
     </div>
 </div>
