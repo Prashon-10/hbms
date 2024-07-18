@@ -16,12 +16,18 @@ $static_room_types = [
 
 // Static services with prices
 $services = [
-    'food' => 50,
     'spa' => 100,
     'parking' => 150,
     'laundry' => 200,
     'gym' => 120,
     'wifi' => 20
+];
+
+// Static food options with prices
+$food_options = [
+    'breakfast' => 50,
+    'lunch' => 100,
+    'dinner' => 150
 ];
 
 // Fetch available room types from the database
@@ -63,10 +69,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Calculate total price including room price and selected services
     $room_price = $all_room_types[$room_type] ?? 0;
     $selected_services = $_POST['services'] ?? [];
+    $selected_foods = $_POST['food'] ?? [];
+
     $service_price = array_reduce($selected_services, function ($acc, $service) use ($services) {
         return $acc + ($services[$service] ?? 0);
     }, 0);
-    $total_price = $room_price + $service_price;
+
+    $food_price = array_reduce($selected_foods, function ($acc, $food) use ($food_options) {
+        return $acc + ($food_options[$food] ?? 0);
+    }, 0);
+
+    $total_price = $room_price + $service_price + $food_price;
 
     // Validate dates
     $today = date('Y-m-d');
@@ -129,7 +142,8 @@ $conn->close();
             var roomPrice = parseFloat(document.getElementById('room-type').options[document.getElementById('room-type').selectedIndex].getAttribute('data-price'));
             var servicesTotal = 0;
             var checkboxes = document.getElementsByName('services[]');
-            
+            var foodDropdown = document.getElementById('food');
+
             for (var i = 0; i < checkboxes.length; i++) {
                 if (checkboxes[i].checked) {
                     var servicePrice = parseFloat(checkboxes[i].getAttribute('data-price'));
@@ -137,10 +151,13 @@ $conn->close();
                 }
             }
 
+            var foodPrice = parseFloat(foodDropdown.options[foodDropdown.selectedIndex].getAttribute('data-price'));
+            servicesTotal += foodPrice;
+
             var totalPrice = roomPrice + servicesTotal;
-            document.getElementById('total-price').innerText = 'Total Price: $' + totalPrice.toFixed(2);
+            document.getElementById('total-price').innerText = 'Total Price: Rs. ' + totalPrice.toFixed(2);
         }
-        
+
         window.onload = function() {
             calculateTotalPrice();
         };
@@ -151,15 +168,15 @@ $conn->close();
     <?php include 'includes/header.php'; ?>
 
     <div class="hotel-details">
-        
+
         <div class="room-types">
             <h3>Room Types</h3>
             <label for="room-type">Select Room Type:</label>
             <form method="post" action="details.php">
                 <select id="room-type" name="room-type" onchange="calculateTotalPrice()" required>
-                    <?php foreach ($all_room_types as $type => $pricePerNight): ?>
+                    <?php foreach ($all_room_types as $type => $pricePerNight) : ?>
                         <option value="<?= htmlspecialchars($type) ?>" data-price="<?= $pricePerNight ?>" <?= $room_type == $type ? 'selected' : '' ?>>
-                            <?= ucfirst($type) ?> Room - $<?= number_format($pricePerNight, 2) ?>/night
+                            <?= ucfirst($type) ?> Room - Rs. <?= number_format($pricePerNight, 2) ?>/night
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -168,10 +185,21 @@ $conn->close();
         <div class="services">
             <h3>Additional Services</h3>
             <label>Select Services (Optional):</label><br>
-            <?php foreach ($services as $service => $price): ?>
+            <?php foreach ($services as $service => $price) : ?>
                 <input type="checkbox" id="<?= $service ?>" name="services[]" value="<?= $service ?>" data-price="<?= $price ?>" onchange="calculateTotalPrice()" style="position: relative; top: 39px;">
-                <label for="<?= $service ?>"><?= ucfirst($service) ?> - $<?= number_format($price, 2) ?></label><br>
+                <label for="<?= $service ?>"><?= ucfirst($service) ?> - Rs. <?= number_format($price, 2) ?></label><br>
             <?php endforeach; ?>
+        </div>
+
+        <div class="foods">
+            <h3>Food Options</h3>
+            <label for="food">Select Food (Optional):</label>
+            <select name="food[]" id="food" onchange="calculateTotalPrice()">
+                <option value="0" data-price="0">None</option>
+                <?php foreach ($food_options as $food => $price) : ?>
+                    <option value="<?= $food ?>" data-price="<?= $price ?>"><?= ucfirst($food) ?> - Rs. <?= number_format($price, 2) ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
 
         <div class="booking-form">
@@ -205,7 +233,7 @@ $conn->close();
                 <label for="check-out-date">Check-out Date:</label>
                 <input type="date" id="check-out-date" name="check-out-date" required><br>
 
-                <div class="total-price" id="total-price">Total Price: $0.00</div>
+                <div class="total-price" id="total-price">Total Price: Rs. 0.00</div>
 
                 <button type="submit">Book Now</button>
             </form>

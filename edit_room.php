@@ -34,6 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $type = sanitize($conn, $_POST['type']);
     $price = sanitize($conn, $_POST['price']);
 
+    // Check if price is greater than 0
+    if ($price <= 0) {
+        $_SESSION['error'] = "Price must be Positive!";
+        header('Location: edit_room.php?id=' . $room_id);
+        exit();
+    }
+
     $update_query = "UPDATE rooms SET type = '$type', price = '$price' WHERE id = $room_id";
     if ($conn->query($update_query)) {
         $_SESSION['message'] = "Room updated successfully!";
@@ -122,7 +129,7 @@ $conn->close();
     <div class="container">
         <h2>Edit Room</h2>
 
-        <?php if (isset($_SESSION['error'])): ?>
+        <?php if (isset($_SESSION['error'])) : ?>
             <p class="error-message"><?= $_SESSION['error']; ?></p>
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>

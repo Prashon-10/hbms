@@ -1,5 +1,5 @@
 <?php
-include ("./config/connection.php");
+include("./config/connection.php");
 include_once './includes/header.php';
 ?>
 

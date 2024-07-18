@@ -3,13 +3,6 @@ session_start();
 include './config/connection.php';
 include_once './includes/header.php';
 
-// Check if admin is logged in
-// if (!isset($_SESSION['admin'])) {
-//     header('Location: admin.php');
-//     exit();
-// }
-
-// Function to sanitize user inputs
 function sanitize($conn, $input)
 {
     return mysqli_real_escape_string($conn, htmlspecialchars(strip_tags(trim($input))));
@@ -21,9 +14,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = sanitize($conn, $_POST['price']);
     $number = sanitize($conn, $_POST['number']);
 
-    $insert_query = "INSERT INTO rooms (room_number, type, price) VALUES ($number, '$type', '$price')";
-    // echo $insert_query;
-    // die;
+    // Check if price is greater than 0
+    if ($price <= 0) {
+        $_SESSION['error'] = "Price must be Positive!";
+        header('Location: add_room.php');
+        exit();
+    }
+
+    $insert_query = "INSERT INTO rooms (room_number, type, price) VALUES ('$number', '$type', '$price')";
     if ($conn->query($insert_query)) {
         $_SESSION['message'] = "Room added successfully!";
         header('Location: dashboard.php');
@@ -37,6 +35,7 @@ $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +50,7 @@ $conn->close();
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1217px;
             margin: 50px auto;
             background-color: #fff;
             padding: 20px;
@@ -113,16 +112,17 @@ $conn->close();
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>Add Room</h2>
 
-        <?php if (isset($_SESSION['message'])): ?>
+        <?php if (isset($_SESSION['message'])) : ?>
             <p class="message"><?= $_SESSION['message']; ?></p>
             <?php unset($_SESSION['message']); ?>
         <?php endif; ?>
 
-        <?php if (isset($_SESSION['error'])): ?>
+        <?php if (isset($_SESSION['error'])) : ?>
             <p class="error"><?= $_SESSION['error']; ?></p>
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
@@ -146,4 +146,5 @@ $conn->close();
         </form>
     </div>
 </body>
+
 </html>

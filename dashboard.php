@@ -180,7 +180,6 @@ $conn->close();
 
         .action-buttons form {
             display: inline;
-            /* width: 153px; */
         }
 
         .action-buttons button,
@@ -273,7 +272,7 @@ $conn->close();
         <!-- Display total bookings and total amount collected -->
         <div id="summary">
             <p>Total Bookings: <?= $total_data['total_bookings']; ?></p>
-            <p>Total Amount Collected: <?= $total_data['total_amount']; ?></p>
+            <p>Total Amount Collected: Rs. <?= $total_data['total_amount']; ?></p>
         </div>
 
         <h3>Rooms</h3>
@@ -352,7 +351,6 @@ $conn->close();
             <tr>
                 <th>ID</th>
                 <th>Room Type</th>
-                <!-- <th>Room Number</th> -->
                 <th>Check-in Date</th>
                 <th>Check-out Date</th>
                 <th>First Name</th>

@@ -162,10 +162,6 @@ $conn->close();
                                     <button type="submit" name="cancel_booking">Cancel Booking</button>
                                 </form>
                             <?php elseif ($booking['cancellation_status'] == 'cancelled') : ?>
-                                <form action="" method="POST">
-                                    <input type="hidden" name="booking_id" value="<?= $booking['id']; ?>">
-                                    <button type="submit" name="delete_booking">Delete Booking</button>
-                                </form>
                             <?php endif; ?>
                         </div>
                     </td>
